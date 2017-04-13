@@ -121,6 +121,7 @@ def computeBuildTargetName(debugBuild) {
         ret += '' + arch.toUpperCase().charAt(0) + arch.substring(1);
     }
     return ret + (debugBuild ? 'Debug' : 'Release')
+    //return ret + 'Release'
 }
 
 // Make cdvBuild a task that depends on the debug/arch-sepecific task.
@@ -222,14 +223,14 @@ android {
         targetCompatibility JavaVersion.VERSION_1_6
     }
 
-    if (cdvReleaseSigningPropertiesFile) {
+    /*if (cdvReleaseSigningPropertiesFile) {
         signingConfigs {
             release {
                 // These must be set or Gradle will complain (even if they are overridden).
-                keyAlias = ""
-                keyPassword = "__unset" // And these must be set to non-empty in order to have the signing step added to the task graph.
-                storeFile = null
-                storePassword = "__unset"
+                keyAlias = "rdss"
+                keyPassword = "gggj6633" // And these must be set to non-empty in order to have the signing step added to the task graph.
+                storeFile = file("debug.keystore")
+                storePassword = "gggj6633"
             }
         }
         buildTypes {
@@ -241,6 +242,21 @@ android {
     }
     if (cdvDebugSigningPropertiesFile) {
         addSigningProps(cdvDebugSigningPropertiesFile, signingConfigs.debug)
+    }*/
+
+    signingConfigs {
+        debug {
+            // These must be set or Gradle will complain (even if they are overridden).
+            keyAlias = "rdss"
+            keyPassword = "gggj6633" // And these must be set to non-empty in order to have the signing step added to the task graph.
+            storeFile = file(/Z:\debug.keystore/)
+            storePassword = "gggj6633"
+        }
+    }
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
     }
 }
 

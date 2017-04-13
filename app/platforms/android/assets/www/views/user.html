@@ -3,8 +3,8 @@
         <div ng-if="!userCtrl.isLoggedIn">
             <div class="list">
                 <label class="item item-input">
-                    <span class="input-label">帳戶：</span>
-                    <input type="text" ng-model="userCtrl.user.username" placeholder="請輸入帳戶">
+                    <span class="input-label">帳號：</span>
+                    <input type="text" ng-model="userCtrl.user.username" placeholder="請輸入帳號">
                 </label>
                 <label class="item item-input">
                     <span class="input-label">密碼：</span>
@@ -32,7 +32,7 @@
                     <h2 align="center">帳戶： {{userCtrl.account.name}}</h2>
                     <br />
                     <h2 align="center">金額： {{userCtrl.account.balance | currency:"":0 }}</h2>
-                    <br />                    
+                    <br />
                     <div class="row">
                         <div class="col col-50">
                             <button class="button button-block button-dark" ng-click="userCtrl.logout()">

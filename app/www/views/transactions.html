@@ -1,14 +1,20 @@
 ﻿<ion-view title="交易明細">
-    <ion-content scroll="false">
+    <ion-content>
         <ion-list>
             <div ng-if="transactionsCtrl.isLoggedIn">
                 <div class="row header">
-                    <div class="col colored col-50">帳戶</div>
-                    <div class="col colored col-50">餘額</div>
+                    <div class="col colored">序號</div>
+                    <div class="col colored">類別</div>
+                    <div class="col colored">金額</div>
+                    <div class="col colored">詳情</div>
                 </div>
-                <div class="row">
-                    <div class="col colored col-50 ">{{transactionsCtrl.account.name}}</div>
-                    <div class="col colored col-50">{{transactionsCtrl.account.balance | currency:"":0}}</div>
+                <div class="row" ng-repeat="transaction in transactionsCtrl.transactions">
+                    <div class="col colored">{{transaction._id}}</div>
+                    <div class="col colored">{{ (transaction.type==='0') ? '消費' : '儲值'}}</div>
+                    <div class="col colored">{{transaction.amount  | currency:"":0}}</div>
+                    <div class="col colored" ng-click="transactionsCtrl.showDetail(transaction)">
+                        <i class="icon ion-ios-list-outline"></i>
+                    </div>
                 </div>
             </div>
             <div ng-if="!transactionsCtrl.isLoggedIn">

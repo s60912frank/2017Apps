@@ -1,5 +1,5 @@
-﻿angular.module('2017Apps').controller('UserController', ['$rootScope', '$state', 'AlertService', function ($rootScope, $state, AlertService) {
-    self = this;
+﻿angular.module('2017Apps').controller('UserController', ['$rootScope', '$state', 'UserService', 'AccountService', 'AlertService', function ($rootScope, $state, UserService, AccountService, AlertService) {
+    var self = this;
 
     var init = function () {
         if (typeof $rootScope.account === 'undefined') {
@@ -20,19 +20,35 @@
 
     init();
 
-   
-   
-   
-   
-   
     self.login = function () {
         if (!self.user.username || !self.user.password) {
             AlertService.alertPopup('請輸入帳號或密碼');
         } else {
-            self.account.name = self.user.username.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase());
-            $rootScope.account = self.account;
+            UserService.login(self.user, function (data) {
+                if (data.error)
+                    AlertService.alertPopup(data.error, null);
+                else
+                    $rootScope.account = data.account;
+                self.account = $rootScope.account;
+                init();
+            });
         }
-        init();
+    };
+
+    self.openAccount = function () {
+        if (!self.user.username || !self.user.password) {
+            AlertService.alertPopup('請輸入帳號或密碼');
+        } else {
+            AccountService.openAccount(self.user, function (data) {
+                if (data.error) {
+                    AlertService.alertPopup(data.error);
+                } else {
+                    $rootScope.account = data.account;
+                    self.account = $rootScope.account;
+                    init();
+                }
+            })
+        }
     };
 
     self.logout = function () {
@@ -40,11 +56,14 @@
         init();
     };
 
-    self.openAccount = function () {
-        self.login();
-    };
-
     self.closeAccount = function () {
-        self.logout();
+        AccountService.closeAccount($rootScope.account._id, function (data) {
+            if (data.error) {
+                AlertService.alertPopup(data.error, null);
+            } else {
+                delete $rootScope.account;
+                init();
+            }
+        })
     }
 }]);

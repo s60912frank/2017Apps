@@ -1,11 +1,14 @@
-﻿angular.module('2017Apps').controller('AccountsController', ['$rootScope', function ($rootScope) {
+﻿angular.module('2017Apps').controller('AccountsController', ['$rootScope', 'AccountService', function ($rootScope, AccountService) {
     var self = this;
+
     var init = function () {
         if (typeof $rootScope.account === 'undefined')
             self.isLoggedIn = false;
         else {
             self.isLoggedIn = true;
-            self.account = $rootScope.account;
+            AccountService.getAccounts(function (accounts) {
+                self.accounts = accounts;
+            });
         }
     }
     init();

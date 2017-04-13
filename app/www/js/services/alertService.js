@@ -6,7 +6,7 @@
             template: alertMessage,
             buttons: [{
                 text: '確定',
-                type: 'button-dark',
+                type: 'button-dark'
             }]
         })
     }

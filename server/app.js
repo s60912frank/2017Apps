@@ -21,9 +21,9 @@
  app.use(bodyParser.urlencoded({ extended: false }));
  app.use(cors());
 
- app.use('/apps16/istore/user', userRouter);
- app.use('/apps16/istore/account', accountRouter);
- app.use('/apps16/istore/transaction', transactionRouter);
+ app.use('/apps16/istore/v2.0/user', userRouter);
+ app.use('/apps16/istore/v2.0/account', accountRouter);
+ app.use('/apps16/istore/v2.0/transaction', transactionRouter);
 
  app.use((req, res, next) => {
      let err = new Error('Not Found');
@@ -32,6 +32,7 @@
  });
 
  app.use((err, req, res, next) => {
+     console.log(err)
      res.status(err.status || 500);
      res.json({ error: 'Service Not Found' });
  });
