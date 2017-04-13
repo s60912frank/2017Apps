@@ -1,0 +1,20 @@
+﻿<ion-view title="帳戶列表">
+    <ion-content scroll="false">
+        <ion-list>
+            <div ng-if="accountsCtrl.isLoggedIn">
+                <div class="row header">
+                    <div class="col colored col-50">帳戶</div>
+                    <div class="col colored col-50">餘額</div>
+                </div>
+                <div class="row">
+                    <div class="col colored col-50 ">{{accountsCtrl.account.name}}</div>
+                    <div class="col colored col-50">{{accountsCtrl.account.balance | currency:"":0}}</div>
+                </div>
+            </div>
+            <div ng-if="!accountsCtrl.isLoggedIn">
+                <br />
+                <h3 align="center">請登入或開戶</h3>
+            </div>
+        </ion-list>
+    </ion-content>
+</ion-view>

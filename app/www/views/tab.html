@@ -1,0 +1,14 @@
+﻿<ion-tabs class="tabs-dark tabs-icon-top">
+    <ion-tab id="operation" title="帳戶作業" icon="ion-social-usd" ng-click="tabCtrl.goto('operation')">
+        <ion-nav-view name="tabContent-operation"></ion-nav-view>
+    </ion-tab>
+    <ion-tab id="transaction" title="交易明細" icon="ion-ios-paper" ng-click="tabCtrl.goto('transactions')">
+        <ion-nav-view name="tabContent-transactions"></ion-nav-view>
+    </ion-tab>
+    <ion-tab id="accounts" title="帳戶列表" icon="ion-ios-people" ng-click="tabCtrl.goto('accounts')">
+        <ion-nav-view name="tabContent-accounts"></ion-nav-view>
+    </ion-tab>
+    <ion-tab id="user" title="帳戶設定" icon="ion-ios-gear" ng-click="tabCtrl.goto('user')">
+        <ion-nav-view name="tabContent-user"></ion-nav-view>
+    </ion-tab>
+</ion-tabs>

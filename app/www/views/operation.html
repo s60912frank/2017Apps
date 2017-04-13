@@ -1,0 +1,42 @@
+﻿<ion-view title="帳戶交易">
+    <ion-content scroll="false">
+        <div>
+            <div class="list list-inset">
+                <label class="item item-stable item-input">
+                    <span class="input-label" style="text-align:center">金額 : </span>
+                    <input type="number" ng-model="operationCtrl.operation.amount" placeholder="{{ !operationCtrl.isLoggedIn ? '請登入或開戶' : '請輸入金額'}}">
+                </label>
+                <label class="item item-stable item-input">
+                    <span class="input-label" style="text-align:center">餘額 : </span>
+                    <div ng-if="!operationCtrl.isLoggedIn">
+                        <p>尚未登入</p>
+                    </div>
+                    <div ng-if="operationCtrl.isLoggedIn">
+                        <p>{{operationCtrl.operation.balance | currency:"":0 }}</p>
+                    </div>
+                </label>
+                <div class="message">
+                    <br>
+                    <p align="center">{{operationCtrl.resultMessage}}</p>
+                </div>
+            </div>
+
+            
+            
+            
+            
+            <div class="row">
+                <div class="col col-50">
+                    <button class="button button-block button-dark" ng-click="operationCtrl.deposit()">
+                        儲值
+                    </button>
+                </div>
+                <div class="col col-50">
+                    <button class="button button-block button-dark" ng-click="operationCtrl.buy()">
+                        消費
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

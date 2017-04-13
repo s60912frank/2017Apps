@@ -1,0 +1,52 @@
+﻿<ion-view title="帳戶設定">
+    <ion-content scroll="false">
+        <div ng-if="!userCtrl.isLoggedIn">
+            <div class="list">
+                <label class="item item-input">
+                    <span class="input-label">帳戶：</span>
+                    <input type="text" ng-model="userCtrl.user.username" placeholder="請輸入帳戶">
+                </label>
+                <label class="item item-input">
+                    <span class="input-label">密碼：</span>
+                    <input type="password" ng-model="userCtrl.user.password" placeholder="請輸入密碼">
+                </label>
+            </div>
+            <div class="row">
+                <div class="col col-50">
+                    <button class="button button-block button-dark" ng-click="userCtrl.login()">
+                        登入
+                    </button>
+                </div>
+                <div class="col col-50">
+                    <button class="button button-block button-dark" ng-click="userCtrl.openAccount()">
+                        開戶
+                    </button>
+                </div>
+            </div>
+        </div>
+
+
+        <div ng-if="userCtrl.isLoggedIn">
+            <div class="card">
+                <div class="item item-text-wrap">
+                    <h2 align="center">帳戶： {{userCtrl.account.name}}</h2>
+                    <br />
+                    <h2 align="center">金額： {{userCtrl.account.balance | currency:"":0 }}</h2>
+                    <br />                    
+                    <div class="row">
+                        <div class="col col-50">
+                            <button class="button button-block button-dark" ng-click="userCtrl.logout()">
+                                登出
+                            </button>
+                        </div>
+                        <div class="col col-50">
+                            <button class="button button-block button-dark" ng-click="userCtrl.closeAccount()">
+                                結清
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

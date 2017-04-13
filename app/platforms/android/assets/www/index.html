@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+    <meta http-equiv="Content-Security-Policy" content="default-src * gap://ready file: data: filesystem:; style-src 'self' 'unsafe-inline' blob: filesystem:; script-src 'self' 'unsafe-inline' 'unsafe-eval' filesystem:;">
+    <link href="js/library/ionic/css/ionic.min.css" rel="stylesheet" />
+    <link href="css/jquery.mobile-1.4.5.min.css" rel="stylesheet" />
+    <link href="css/index.css" rel="stylesheet" />
+    
+    <title>2017Apps</title>
+    
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/library/ionic/js/ionic.bundle.min.js"></script>
+
+    <script type="text/javascript" src="js/app.module.js"></script>
+    <script type="text/javascript" src="js/app.config.js"></script>
+    <script type="text/javascript" src="js/app.run.js"></script>
+
+    <script type="text/javascript" src="js/controllers/tabController.js"></script>
+    <script type="text/javascript" src="js/controllers/userController.js"></script>
+    <script type="text/javascript" src="js/controllers/operationController.js"></script>    
+    <script type="text/javascript" src="js/controllers/transactionsController.js"></script>
+    <script type="text/javascript" src="js/controllers/accountsController.js"></script>
+    
+    <script type="text/javascript" src="js/services/alertService.js"></script>
+
+    <script type="text/javascript" src="js/app.bootstrap.js"></script>
+</head>
+
+<body>
+    <ion-nav-bar class="bar bar-dark">
+    </ion-nav-bar>
+    <ion-nav-view align-title="center">
+    </ion-nav-view>
+</body>
+</html>
