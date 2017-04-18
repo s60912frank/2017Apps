@@ -7,7 +7,7 @@ router.get('/:accountId', function(req, res) {
         if (err)
             res.json({ error: '交易明細錯誤' });
         else
-            res.json(transactions);
+            res.json({ transactions });
     })
 });
 

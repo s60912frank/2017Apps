@@ -21,8 +21,8 @@ angular.module('2017Apps').controller('OperationController', ['$rootScope', '$io
         else if (!self.account.amount)
             AlertService.alertPopup('請輸入金額');
         else {
-            AccountService.operation(self.account, function (account) {
-                $rootScope.account.balance = account.balance;
+            AccountService.operation(self.account, function (data) {
+                $rootScope.account.balance = data.account.balance;
                 self.showMessage = $rootScope.account.name + ' 已儲值 ' + $filter('currency')(self.account.amount, '', 0) + '元';
                 init();
             });
@@ -38,8 +38,8 @@ angular.module('2017Apps').controller('OperationController', ['$rootScope', '$io
             AlertService.alertPopup('餘額不足');
         else {
             self.account.amount *= -1;
-            AccountService.operation(self.account, function (account) {
-                $rootScope.account.balance = account.balance;
+            AccountService.operation(self.account, function (data) {
+                $rootScope.account.balance = data.account.balance;
                 self.account.amount = Math.abs(self.account.amount);
                 self.showMessage = $rootScope.account.name + ' 已消費 ' + $filter('currency')(Math.abs(self.account.amount), '', 0) + '元', 'tab.transactions';
                 init();

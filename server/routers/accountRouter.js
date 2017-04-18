@@ -6,58 +6,6 @@ var express = require('express'),
     Transaction = require('../models/transactionModel');
 
 router.post('/', function(req, res) {
-    /*console.log(req.body)
-    let createUser = () => {
-        return new Promise((resolve, reject) => {
-            let user = new User({
-                username: req.body.username,
-                password: req.body.password
-            });
-            user.save((err)=> {
-                if (err) {
-                    res.json({ error: '新增帳號錯誤' });
-                    //reject()
-                }
-                else
-                    resolve(user);
-            });
-        })
-    }
-    let createAccount = (user) => {
-        return new Promise((resolve, reject) => {
-            Account.create({
-                name: user.username.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase()),
-                balance: 0
-            }, (err, account) => {
-                console.log(account)
-                if (err) {
-                    res.json({ error: '新增帳戶錯誤' });
-                    //reject()
-                }
-                else
-                    resolve(user._id, account._id);
-            })
-        })
-    }
-    let setAccount = (userId, accountId) => {
-        console.log(userId, accountId)
-        return new Promise((resolve, reject) => {
-            User.findByIdAndUpdate(userId, { $set: { account: accountId } }, { new: true })
-            .populate('account')
-            .exec((err, user) => {
-                if (err){
-                    res.json({ error: '帳號設定錯誤' });
-                    console.log(err)
-                }
-                else 
-                    res.json({ account: user.account });
-                resolve()
-            })
-        })
-    }
-
-    createUser().then(createAccount).then(setAccount)*/
-
     async.waterfall([function(next) {
         var user = new User({
             username: req.body.username,
@@ -114,7 +62,7 @@ router.put('/', function(req, res) {
             if (err)
                 return res.json({ error: '交易紀錄錯誤' });
             else
-                return res.json(account);
+                return res.json({ account });
         });
     }])
 });
@@ -150,7 +98,16 @@ router.get('/', function(req, res) {
         if (err)
             return res.json({ error: '帳戶列表錯誤' });
         else
-            return res.json(accounts);
+            return res.json({ accounts });
+    })
+});
+
+router.get('/transaction/:accountId', function(req, res) {
+    Transaction.find({ account: req.params.accountId }, function(err, transactions) {
+        if (err)
+            res.json({ error: '交易明細錯誤' });
+        else
+            res.json({ transactions });
     })
 });
 

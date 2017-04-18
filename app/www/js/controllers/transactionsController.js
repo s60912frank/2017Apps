@@ -6,8 +6,8 @@
             self.isLoggedIn = false;
         else {
             self.isLoggedIn = true;
-            TransactionService.getTransactions($rootScope.account._id, function (transactions) {
-                self.transactions = transactions;
+            TransactionService.getTransactions($rootScope.account._id, function (data) {
+                self.transactions = data.transactions;
             });
         }
     }

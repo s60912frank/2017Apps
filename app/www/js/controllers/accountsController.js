@@ -6,8 +6,8 @@
             self.isLoggedIn = false;
         else {
             self.isLoggedIn = true;
-            AccountService.getAccounts(function (accounts) {
-                self.accounts = accounts;
+            AccountService.getAccounts(function (data) {
+                self.accounts = data.accounts;
             });
         }
     }

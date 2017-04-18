@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.ilab.bankApp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>16_hw3</name>
+    <name>16_hw5</name>
     <description>
-        An useless app.
+        A slightly not that useless app.
     </description>
     <author email="s60912frank@gmail.com" href="http://gmin.nctu.me">
         Gmin

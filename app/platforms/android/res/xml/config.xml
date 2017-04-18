@@ -4,9 +4,9 @@
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
     </feature>
-    <name>16_hw3</name>
+    <name>16_hw5</name>
     <description>
-        An useless app.
+        A slightly not that useless app.
     </description>
     <author email="s60912frank@gmail.com" href="http://gmin.nctu.me">
         Gmin

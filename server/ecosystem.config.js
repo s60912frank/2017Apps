@@ -1,7 +1,7 @@
 module.exports = {
   apps : [
     {
-      name      : "appsXX",
+      name      : "apps16",
       script    : "bin/www",
       env: {
         COMMON_VARIABLE: "true"
