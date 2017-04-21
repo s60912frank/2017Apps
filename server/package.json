@@ -3,7 +3,8 @@
   "version": "2.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www"
+    "start": "nodemon ./bin/www",
+    "test": "set TESTMODE=remote&& mocha ./test/*"
   },
   "dependencies": {
     "async": "^2.1.5",

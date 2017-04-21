@@ -10,8 +10,7 @@
  autoIncrement.initialize(connection);
 
  let userRouter = require('./routers/userRouter'),
-     accountRouter = require('./routers/accountRouter'),
-     transactionRouter = require('./routers/transactionRouter');
+     accountRouter = require('./routers/accountRouter');
 
  let app = express(),
      router = express.Router();
@@ -25,7 +24,6 @@ mongoose.Promise = global.Promise;
 
  app.use('/apps16/istore/user', userRouter);
  app.use('/apps16/istore/account', accountRouter);
- //app.use('/apps16/istore/transaction', transactionRouter);
 
  app.use((req, res, next) => {
      let err = new Error('Not Found');

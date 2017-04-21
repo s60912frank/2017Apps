@@ -2,16 +2,14 @@ const testenv = require('./testenv')
 var chai = require('chai'),
     should = chai.should(),
     chaiHttp = require('chai-http');
-
 chai.use(chaiHttp);
 
-var app = require('../app.js');
-
+var app = testenv.target;
 var studentId = testenv.studentID;
 
 describe('整合測試', function() {
     var account,
-        user = testenv.testUsers[0]
+        user = testenv.getTestUsers()[0]
 
     it('開戶成功', function(done) {
         chai.request(app)

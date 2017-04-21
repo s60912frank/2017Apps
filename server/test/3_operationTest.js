@@ -4,13 +4,12 @@ var chai = require('chai'),
     chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
-var app = require('../app.js');
-
+var app = testenv.target;
 var studentId = testenv.studentID;
 
 describe('作業測試', function() {
     var account,
-        user = testenv.testUsers[0]
+        user = testenv.getTestUsers()[0]
 
     before(function(done) {
         chai.request(app)

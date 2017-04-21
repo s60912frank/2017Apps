@@ -4,13 +4,12 @@ var chai = require('chai'),
     chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
-var app = require('../app.js');
-
+var app = testenv.target;
 var studentId = testenv.studentID;
 
 describe('登入測試', function () {
     var account,
-        user = testenv.testUsers[0]
+        user = testenv.getTestUsers()[0]
 
     before(function(done){
         chai.request(app)
@@ -43,7 +42,7 @@ describe('登入測試', function () {
     });
 
     it('密碼錯誤', function (done) {
-        user.password = testenv.testUsers[1].password;
+        user.password = testenv.getTestUsers()[1].password;
         chai.request(app)
             .post(`/${studentId}/istore/user/login`)
             .send(user)
@@ -55,7 +54,7 @@ describe('登入測試', function () {
     });
 
     it('帳號不存在', function (done) {
-        user.username = testenv.testUsers[1].username;
+        user.username = testenv.getTestUsers()[1].username;
         chai.request(app)
             .post(`/${studentId}/istore/user/login`)
             .send(user)

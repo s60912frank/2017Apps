@@ -4,51 +4,34 @@ var chai = require('chai'),
     chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
-
-var app = require('../app.js');
-
+var app = testenv.target;
 var async = require('async');
-
 var studentId = testenv.studentID;
 
 describe('帳戶列表測試', function() {
     var idArray = [];
 
-    var userArray = testenv.testUsers
+    var userArray = testenv.getTestUsers()
+
+    let getCreateAccountJobs = () => {
+        let jobs = []
+        for(let i = 0; i < 3;i++) {
+            jobs.push((callback) => {
+                        chai.request(app)
+                            .post(`/${studentId}/istore/account`)
+                            .send(userArray[i])
+                            .end(function(err, res) {
+                                console.log(res.body)
+                                idArray.push(res.body.account._id);
+                                callback();
+                            });
+                    })
+        }
+        return jobs
+    }
 
     before(function(done) {
-        async.parallel([
-                function(callback) {
-                    chai.request(app)
-                        .post(`/${studentId}/istore/account`)
-                        .send(userArray[0])
-                        .end(function(err, res) {
-                            idArray.push(res.body.account._id);
-                            callback();
-                        });
-                },
-                function(callback) {
-                    chai.request(app)
-                        .post(`/${studentId}/istore/account`)
-                        .send(userArray[1])
-                        .end(function(err, res) {
-                            idArray.push(res.body.account._id);
-                            callback();
-                        });
-                },
-                function(callback) {
-                    chai.request(app)
-                        .post(`/${studentId}/istore/account`)
-                        .send(userArray[2])
-                        .end(function(err, res) {
-                            idArray.push(res.body.account._id);
-                            callback();
-                        });
-                }
-            ],
-            function() {
-                done();
-            });
+        async.parallel(getCreateAccountJobs(), () => done());
     });
 
     after(function(done) {

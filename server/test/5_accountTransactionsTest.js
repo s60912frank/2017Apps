@@ -2,18 +2,15 @@ const testenv = require('./testenv')
 var chai = require('chai'),
     should = chai.should(),
     chaiHttp = require('chai-http');
-
 chai.use(chaiHttp);
 
-var app = require('../app.js');
-
+var app = testenv.target;
 var async = require('async');
-
 var studentId = testenv.studentID;
 
 describe('交易明細測試', function() {
     var account,
-        user = testenv.testUsers[0]
+        user = testenv.getTestUsers()[0]
 
     before(function(done) {
         async.series([
