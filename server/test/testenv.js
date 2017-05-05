@@ -1,7 +1,7 @@
-const mode = (process.argv[2]) ? process.argv[2] : 'remote'
+const mode = 'remote'
 module.exports = {
     target: (mode == 'remote') ? 'http://104.199.219.156:8080' : require('../app'),
-    studentID: 'apps16',
+    studentID: 'apps17',
     getTestUsers: () => {
         return [
         { username: "alice", password: "a1234" },
