@@ -7,11 +7,15 @@
                         <div class="col colored">序號</div>
                         <div class="col colored">帳戶</div>
                         <div class="col colored">餘額</div>
+                        <div class="col colored">交易</div>
                     </div>
                     <div class="row" ng-repeat="account in accountsCtrl.accounts">
                         <div class="col colored">{{account._id}}</div>
                         <div class="col colored">{{account.name}}</div>
                         <div class="col colored">{{account.balance  | currency:"":0}}</div>
+                        <div class="col colored" ng-click="accountsCtrl.showTransactions(account)">
+                            <i class="icon ion-ios-list-outline"></i>
+                        </div>
                     </div>
                 </ion-list>
             </div>

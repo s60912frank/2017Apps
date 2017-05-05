@@ -3,6 +3,8 @@
 /**
  * Module dependencies.
  */
+var { storeId } = require('../config/storeConfig');
+
 
 var app = require('../app');
 var debug = require('debug')('ibank:server');
@@ -12,7 +14,7 @@ var http = require('http');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '3016');
+var port = normalizePort(process.env.PORT || `30${storeId}`);
 app.set('port', port);
 
 /**

@@ -1,26 +1,26 @@
-var express = require('express'),
+var { storeSecret } = require('../config/storeConfig'),
+    express = require('express'),
     router = express.Router(),
-    User = require('../models/userModel'),
-    Account = require('../models/accountModel');
+    User = require('../models/userModel');
 
-router.post('/login', function(req, res) {
-    User.findOne({ username: req.body.username })
-        .populate('account')
-        .exec(function(err, user) {
-            if (err) {
-                res.json({ error: '帳號資料錯誤' });
-            } else if (!user) {
-                res.json({ error: "帳號不存在" });
-            } else if (!user.account) {
-                res.json({ error: "帳戶不存在" });
-            } else if (user.password !== req.body.password) {
-                res.json({ error: "密碼錯誤" });
-            } else {
-                res.json({
-                    account: user.account
-                });
-            }
-        })
+var passport = require('passport'),
+    jwt = require('jsonwebtoken');
+
+router.post('/login', function (req, res) {
+    passport.authenticate('local', { session: false }, function (err, user, errInfo) {
+        if (err)
+            return res.json({ error: '登入錯誤' });
+        else if (errInfo) {
+            if (errInfo.name === 'IncorrectPasswordError')
+                return res.json({ error: '密碼錯誤' });
+            else if (errInfo.name === 'IncorrectUsernameError')
+                return res.json({ error: '帳號不存在' });
+        } else {
+            var token = jwt.sign({ role: user.account.role }, storeSecret, { expiresIn: '30m' });
+            res.header('Authorization', `Bearer ${token}`);
+            return res.json({ account: user.account });
+        }
+    })(req, res);
 });
 
 module.exports = router;

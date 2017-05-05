@@ -1,7 +1,9 @@
+var { storeId } = require('./config/storeConfig');
+
 module.exports = {
   apps : [
     {
-      name      : "apps16",
+      name      : `apps${storeId}`,
       script    : "bin/www",
       env: {
         COMMON_VARIABLE: "true"
@@ -12,3 +14,4 @@ module.exports = {
     }
   ]
 }
+

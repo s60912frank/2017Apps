@@ -4,7 +4,6 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var transactionSchema = new Schema({
-	account: { type: Number, ref: 'Account' },
     amount: { type: Number },
     balance: { type: Number },
     type: { type: String },

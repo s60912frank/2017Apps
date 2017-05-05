@@ -6,7 +6,8 @@ var mongoose = require('mongoose'),
 var accountSchema = new Schema({
     name: { type: String, required: true },
     balance: { type: Number, required: true },
-    transactions: [ { type: Number, ref: 'Transaction'} ]
+    transactions: [{ type: Number, ref: 'Transaction' }],
+    role: { type: String },
 });
 
 accountSchema.plugin(uniqueValidator);

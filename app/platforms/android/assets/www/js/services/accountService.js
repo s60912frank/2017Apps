@@ -16,6 +16,7 @@
             (onSuccess || angular.noop)(data);
         }).
         error(function (data, status, headers, config) {
+            //alert($rootScope.iStoreUrl)
             alert("Error - Data:" + data + " status:" + status);
         });
     }

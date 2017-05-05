@@ -1,23 +1,29 @@
 {
   "name": "iStore",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www",
-    "test": "set TESTMODE=remote&& mocha ./test/*"
+    "start": "nodemon ./bin/www"
   },
   "dependencies": {
     "async": "^2.1.5",
     "body-parser": "~1.15.2",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
+    "connect-roles": "^3.1.2",
     "cors": "^2.8.1",
     "debug": "~2.2.0",
     "express": "~4.14.0",
-    "mongoose": "^4.9.0",
+    "express-jwt": "^5.3.0",
+    "jsonwebtoken": "^7.3.0",
+    "mocha": "^3.2.0",
+    "mongoose": "^4.6.8",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-unique-validator": "^1.0.4",
     "morgan": "^1.8.1",
-    "nodemon": "^1.11.0"
+    "nodemon": "^1.11.0",
+    "passport": "^0.3.2",
+    "passport-local": "^1.0.0",
+    "passport-local-mongoose": "^4.0.0"
   }
 }
