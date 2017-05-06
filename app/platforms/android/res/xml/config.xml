@@ -4,7 +4,7 @@
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
     </feature>
-    <name>16_hw6</name>
+    <name>16_hw8</name>
     <description>
         A slightly not that useless app.
     </description>

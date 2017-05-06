@@ -66,5 +66,5 @@
         })
     $ionicConfigProvider.tabs.position('bottom');
     $httpProvider.interceptors.push('tokenInterceptor');
-
+    $ionicConfigProvider.navBar.alignTitle('center');
 }]);
