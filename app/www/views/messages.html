@@ -1,6 +1,22 @@
-﻿<ion-view title="優惠訊息">
-    <ion-content scroll="false">
-        <br />
-        <h3 align="center">優惠訊息</h3>
+﻿<ion-view title="優惠訊息{{messagesCtrl.accountName}}">
+    <ion-content>        
+        <div>
+            <ion-list>
+                <div class="row header">
+                    <div class="col col-15 colored">序號</div>
+                    <div class="col colored">標題</div>
+                    <div class="col colored">時間</div>
+                    <div class="col col-15 colored">內容</div>
+                </div>
+                <div class="row" ng-repeat="message in messagesCtrl.messages">
+                    <div class="col col-15 colored">{{message._id}}</div>
+                    <div class="col colored">{{message.title}}</div>
+                    <div class="col colored">{{message.timeStamp | date: 'yyyy年MM月dd日'}}</div>
+                    <div class="col col-15 colored" ng-click="messagesCtrl.showDetail(message)">
+                        <i class="icon ion-ios-list-outline"></i>
+                    </div>
+                </div>
+            </ion-list>
+        </div>        
     </ion-content>
 </ion-view>

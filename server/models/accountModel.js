@@ -4,10 +4,12 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var accountSchema = new Schema({
-    name: { type: String, required: true },
+    name: { type: String, required: true, unique: true },
     balance: { type: Number, required: true },
     transactions: [{ type: Number, ref: 'Transaction' }],
+    messages: [{ type: Number, ref: 'Message' }],
     role: { type: String },
+    user: { type: Number, ref: 'User' }
 });
 
 accountSchema.plugin(uniqueValidator);

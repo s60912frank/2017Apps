@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>1032784485121-cdm6pomj0jmifnp4kdrocmcdab4tpn85.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1032784485121-cdm6pomj0jmifnp4kdrocmcdab4tpn85</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD8IecXdSg94UI2KANelHsA8vjkvoutntc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1032784485121</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.ilab.bankApp</string>
+	<key>PROJECT_ID</key>
+	<string>bankapp-7db5c</string>
+	<key>STORAGE_BUCKET</key>
+	<string>bankapp-7db5c.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1032784485121:ios:4b4bb1284920f302</string>
+	<key>DATABASE_URL</key>
+	<string>https://bankapp-7db5c.firebaseio.com</string>
+</dict>
+</plist>

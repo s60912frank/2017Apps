@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="Z:\2017Apps\platforms\android\CordovaLib\assets"/><source path="Z:\2017Apps\platforms\android\CordovaLib\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="Z:\2017Apps\platforms\android\CordovaLib\src\release\assets"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="D:\TempWorkDir\2017Apps\repo\app\platforms\android\CordovaLib\assets"/><source path="D:\TempWorkDir\2017Apps\repo\app\platforms\android\CordovaLib\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="D:\TempWorkDir\2017Apps\repo\app\platforms\android\CordovaLib\src\release\assets"/></dataSet></merger>

@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.ilab.bankApp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>16_hw8</name>
+    <name>16_hw9</name>
     <description>
-        A slightly not that useless app.
+        A not that useful app.
     </description>
-    <author email="s60912frank@gmail.com" href="http://gmin.nctu.me">
+    <author email="s60912frank@gmail.com" href="https://gmin.cf">
         Gmin
     </author>
     <content src="index.html" />

@@ -4,11 +4,15 @@
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
     </feature>
-    <name>16_hw8</name>
+    <feature name="FCMPlugin">
+        <param name="android-package" value="com.gae.scaffolder.plugin.FCMPlugin" />
+        <param name="onload" value="true" />
+    </feature>
+    <name>16_hw9</name>
     <description>
-        A slightly not that useless app.
+        A not that useful app.
     </description>
-    <author email="s60912frank@gmail.com" href="http://gmin.nctu.me">
+    <author email="s60912frank@gmail.com" href="https://gmin.cf">
         Gmin
     </author>
     <content src="index.html" />

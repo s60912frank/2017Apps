@@ -6,8 +6,9 @@
             self.isLoggedIn = false;
         else {
             self.isLoggedIn = true;
-            accountId = $state.params.account ? $state.params.account._id : $rootScope.account._id;
+            var accountId = $state.params.account ? $state.params.account._id : $rootScope.account._id;
             self.accountName = $state.params.account ? '：' + $state.params.account.name : '';
+
             AccountService.getTransactions(accountId, function (data) {
                 self.transactions = data.transactions;
             });

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1032784485121",
+    "firebase_url": "https://bankapp-7db5c.firebaseio.com",
+    "project_id": "bankapp-7db5c",
+    "storage_bucket": "bankapp-7db5c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1032784485121:android:4b4bb1284920f302",
+        "android_client_info": {
+          "package_name": "com.ilab.bankApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1032784485121-v8jrvb403e41d06i9m7kh09goq9t2oi8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBsMVvVvHzqkxT0owQW7LVT9HOQj-CpQ9I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

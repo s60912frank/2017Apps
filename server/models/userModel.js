@@ -6,7 +6,11 @@ var mongoose = require('mongoose'),
 
 var userSchema = new Schema({
     username: { type: String, required: true, unique: true },
-    account: { type: Number, ref: 'Account' }
+    deviceToken: { type: String },
+    account: [{
+        storeId: { type: String },
+        accountId: { type: Number }
+    }]
 });
 
 userSchema.plugin(uniqueValidator);
@@ -14,7 +18,8 @@ userSchema.plugin(autoIncrement.plugin, {
     model: 'User',
     startAt: 1
 });
-userSchema.plugin(passportLocalMongoose, { populateFields: 'account' });
+
+userSchema.plugin(passportLocalMongoose);
 
 
 module.exports = mongoose.model('User', userSchema);

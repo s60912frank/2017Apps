@@ -19,6 +19,15 @@
           });
     };
 
+    self.sendMessage = function (message, onSuccess) {
+        $http.post($rootScope.iStoreUrl + '/account/message', message).
+           success(function (data, status, headers, config) {
+               (onSuccess || angular.noop)(data);
+           }).error(function (data, status, headers, config) {
+               alert("Error - Data:" + data + " status:" + status);
+           });
+    };
+
     self.operation = function (account, onSuccess) {
         $http.put($rootScope.iStoreUrl + '/account', account).
         success(function (data, status, headers, config) {
@@ -29,8 +38,8 @@
         });
     };
 
-    self.closeAccount = function (accountId, onSuccess) {
-        $http.delete($rootScope.iStoreUrl + '/account/' + accountId).
+    self.closeAccount = function (stroeId, accountId, onSuccess) {
+        $http.delete($rootScope.iStoreUrl + '/account/' + stroeId + '/' + accountId).
         success(function (data, status, headers, config) {
             (onSuccess || angular.noop)(data);
         }).
@@ -57,5 +66,14 @@
         error(function (data, status, headers, config) {
             alert("Error - Data:" + data + " status:" + status);
         });
+    };
+
+    self.getMessages = function (accountId, onSuccess) {
+        $http.get($rootScope.iStoreUrl + '/account/message/' + accountId).
+          success(function (data, status, headers, config) {
+              (onSuccess || angular.noop)(data);
+          }).error(function (data, status, headers, config) {
+              alert("Error - Data:" + data + " status:" + status);
+          });
     };
 }]);

@@ -1,17 +1,16 @@
-var { storeId } = require('./config/storeConfig');
+var { storeId } = require('./config/storeConfig').store;
 
 module.exports = {
-  apps : [
+  apps: [
     {
-      name      : `apps${storeId}`,
-      script    : "bin/www",
+      name: `apps${storeId}`,
+      script: "bin/www",
       env: {
         COMMON_VARIABLE: "true"
       },
-      env_production : {
+      env_production: {
         NODE_ENV: "production"
       }
     }
   ]
 }
-

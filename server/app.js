@@ -1,4 +1,4 @@
-var { storeDB, storeSecret, storePath } = require('./config/storeConfig'),
+var { storeDB, storeSecret, storePath } = require('./config/storeConfig').store,
     express = require('express'),
     logger = require('morgan'),
     bodyParser = require('body-parser'),
@@ -35,7 +35,7 @@ app.all('*', expressJwt({ secret: storeSecret })
     .unless({
         path: [
             { url: `${storePath}/user/login` },
-            { url: `${storePath}/account`, methods: ['POST'] }]
+            { url: `${storePath}/user`, methods: ['POST'] }]
     }), function (req, res, next) {
         next();
     });

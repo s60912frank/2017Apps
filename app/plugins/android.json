@@ -9,6 +9,9 @@
     "installed_plugins": {
         "cordova-plugin-whitelist": {
             "PACKAGE_NAME": "com.ilab.bankApp"
+        },
+        "cordova-plugin-fcm": {
+            "PACKAGE_NAME": "com.ilab.bankApp"
         }
     },
     "dependent_plugins": {}

@@ -47,9 +47,28 @@
         .state('tab.messages', {
             url: '/messages',
             cache: false,
+            params: {
+                account: null
+            }, 
             views: {
                 'tabContent-messages': {
-                    templateUrl: 'views/messages.html'
+                    templateUrl: 'views/messages.html',
+                    controller: 'MessagesController',
+                    controllerAs: 'messagesCtrl'
+                }
+            }
+        })
+        .state('tab.sendMessage', {
+            url: '/sendMessage',
+            cache: false,
+            params: {
+                accounts: null
+            }, 
+            views: {
+                'tabContent-sendMessage': {
+                    templateUrl: 'views/sendMessage.html',
+                    controller: 'SendMessageController',
+                    controllerAs: 'sendMessageCtrl'
                 }
             }
         })
@@ -65,6 +84,7 @@
             }
         })
     $ionicConfigProvider.tabs.position('bottom');
-    $httpProvider.interceptors.push('tokenInterceptor');
     $ionicConfigProvider.navBar.alignTitle('center');
+    $httpProvider.interceptors.push('tokenInterceptor');
+
 }]);

@@ -1,1 +1,1 @@
-﻿angular.module('2017Apps', ['ionic']);
+﻿angular.module('2017Apps', ['ionic', 'checklist-model']);
