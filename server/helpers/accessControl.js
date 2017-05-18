@@ -23,8 +23,14 @@ user.use('closeAccount', function (req) {
     }
 });
 
-user.use('operation', function (req) {
-    if (req.user && req.user.role === 'customer') {
+user.use('buy', function (req) {
+    if (req.user && req.user.role === 'customer' || req.user.role === 'line') {
+        return true;
+    }
+});
+
+user.use('deposit', function (req) {
+    if (req.user && req.user.role === 'customer' || req.user.role === 'line') {
         return true;
     }
 });
@@ -49,6 +55,30 @@ user.use('sendMessage', function (req) {
 
 user.use('messages', function (req) {
     if (req.user && (req.user.role === 'manager' || req.user.role === 'customer')) {
+        return true;
+    }
+});
+
+user.use('product', function (req) {
+    if (req.user && (req.user.role === 'manager')) {
+        return true;
+    }
+});
+
+user.use('products', function (req) {
+    if (req.user && (req.user.role === 'manager' || req.user.role === 'customer' || req.user.role === 'line')) {
+        return true;
+    }
+});
+
+user.use('linePushProducts', function (req) {
+    if (req.user && req.user.role === 'manager') {
+        return true;
+    }
+});
+
+user.use('linePushLocation', function (req) {
+    if (req.user && req.user.role === 'manager') {
         return true;
     }
 });

@@ -7,7 +7,9 @@ var transactionSchema = new Schema({
     amount: { type: Number },
     balance: { type: Number },
     type: { type: String },
+    product: { type: Number, ref: 'Product' },
     timeStamp: { type: Date, default: Date.now }
+
 });
 
 transactionSchema.plugin(uniqueValidator);

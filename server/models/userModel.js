@@ -7,7 +7,8 @@ var mongoose = require('mongoose'),
 var userSchema = new Schema({
     username: { type: String, required: true, unique: true },
     deviceToken: { type: String },
-    account: [{
+    lineId: { type: String },
+    accounts: [{
         storeId: { type: String },
         accountId: { type: Number }
     }]

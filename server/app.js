@@ -18,7 +18,11 @@ var passport = require('passport'),
     user = require('./helpers/accessControl');
 
 var userRouter = require('./routers/userRouter'),
-    accountRouter = require('./routers/accountRouter');
+    accountRouter = require('./routers/accountRouter'),
+    productRouter = require('./routers/productRouter'),
+    linePushRouter = require('./routers/lineRouter');
+
+require('./libs/lineRobot');
 
 var app = express();
 
@@ -31,6 +35,8 @@ app.use(passport.initialize());
 passport.use(new LocalStrategy(User.authenticate()));
 app.use(user.middleware());
 
+app.use(`${storePath}/public`, express.static('public'));
+
 app.all('*', expressJwt({ secret: storeSecret })
     .unless({
         path: [
@@ -42,6 +48,8 @@ app.all('*', expressJwt({ secret: storeSecret })
 
 app.use(`${storePath}/user`, userRouter);
 app.use(`${storePath}/account`, accountRouter);
+app.use(`${storePath}/product`, productRouter);
+app.use(`${storePath}/line`, linePushRouter);
 
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
