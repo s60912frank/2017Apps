@@ -14,8 +14,6 @@ var User = require('../models/userModel'),
 var Messages = LineBot.Messages;
 
 lineBot.on('follow', function(event) {
-    fs.writeFileSync('../public/events.txt', JSON.stringify(new Date()), () => {})
-
     var { replyToken } = event;
     var lineMessages = new Messages().addButtons({
         thumbnailImageUrl: lineIconUrl,
@@ -32,32 +30,38 @@ lineBot.on('follow', function(event) {
 });
 
 lineBot.on('message', function(event) {
-    consol.log(`Incoming message: ${event.message}`)
-
     var { text } = event.message;
     var { replyToken } = event;
     var lineMessages = new Messages();
 
-    if (text.substr(0, 2) === '儲值') {
-        var amount = text.substring(2, text.length - 1);
-        axios({
-            method: 'put',
-            url: lineDepositUrl,
-            headers: { Authorization: lineJwt },
-            data: { lineId: event.source.userId, amount: amount },
-        }).then(function(response) {
-            if (response.data.error) {
-                lineMessages.addText(response.data.error);
+    const depositPattern = /^\u5132\u503c\d+\u5143$/
+    console.log(text)
+
+    if (text.indexOf('儲值') != -1) {
+        if (depositPattern.test(text)) {
+            var amount = text.substring(2, text.length - 1);
+            axios({
+                method: 'put',
+                url: lineDepositUrl,
+                headers: { Authorization: lineJwt },
+                data: { lineId: event.source.userId, amount: amount },
+            }).then(function(response) {
+                if (response.data.error) {
+                    lineMessages.addText(response.data.error);
+                    lineBot.replyMessage(replyToken, lineMessages.commit());
+                } else {
+                    var account = response.data.account;
+                    lineMessages.addText(`商店:Store${storeId}\n帳戶:${account.name}\n餘額:${account.balance}`);
+                    lineBot.replyMessage(replyToken, lineMessages.commit());
+                }
+            }).catch(function(err) {
+                lineMessages.addText('儲值錯誤');
                 lineBot.replyMessage(replyToken, lineMessages.commit());
-            } else {
-                var account = response.data.account;
-                lineMessages.addText(`商店:Store${storeId}\n帳戶:${account.name}\n餘額:${account.balance}`);
-                lineBot.replyMessage(replyToken, lineMessages.commit());
-            }
-        }).catch(function(err) {
-            lineMessages.addText('儲值錯誤');
+            });
+        } else {
+            lineMessages.addText('若要儲值,請依以下格式輸入:儲值{數字}元');
             lineBot.replyMessage(replyToken, lineMessages.commit());
-        });
+        }
     } else if (text === '商品') {
         axios({
             method: 'get',
@@ -89,6 +93,9 @@ lineBot.on('message', function(event) {
             lineMessages.addText('商品錯誤');
             lineBot.replyMessage(replyToken, lineMessages.commit())
         });
+    } else {
+        lineMessages.addText('本帳號無法對個別用戶回覆喔!');
+        lineBot.replyMessage(replyToken, lineMessages.commit())
     }
 });
 

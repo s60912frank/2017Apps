@@ -1,4 +1,4 @@
-<ion-view title="優惠訊息{{sendMessageCtrl.accountsName}}">
+<ion-view title="{{sendMessageCtrl.viewTitle}}">
     <ion-content scroll="false">
         <div class="card">
             <div class="list">
@@ -6,20 +6,29 @@
                     <span class="input-label">標題</span>
                     <input type="text" placeholder="Title" ng-model="sendMessageCtrl.message.title" />
                 </label>
-                <label class="item item-input item-stacked-label">
+                <label class="item item-input item-stacked-label" ng-hide="sendMessageCtrl.isSale">
                     <span class="input-label">內容</span>
                     <input type="text" placeholder="Body" ng-model="sendMessageCtrl.message.content" />
                 </label>
+                <label class="item item-input item-stacked-label" ng-show="sendMessageCtrl.isSale">
+                    <span class="input-label">地址</span>
+                    <input type="text" placeholder="Body" ng-model="sendMessageCtrl.message.address" />
+                </label>
             </div>
             <div class="row">
-                <div class="col col-50">
-                    <button class="button button-block button-dark" ng-click="sendMessageCtrl.push()">
-                            發訊
+                <div class="col col-50" ng-hide="sendMessageCtrl.isSale">
+                    <button class="button button-block button-dark" ng-click="sendMessageCtrl.send()">
+                        發訊
+                    </button>
+                </div>
+                <div class="col col-50" ng-show="sendMessageCtrl.isSale">
+                    <button class="button button-block button-dark" ng-click="sendMessageCtrl.sendSale()">
+                        LINE推播
                     </button>
                 </div>
                 <div class="col col-50">
                     <button class="button button-block button-dark" ng-click="sendMessageCtrl.cancel()">
-                            取消
+                        取消
                     </button>
                 </div>
             </div>

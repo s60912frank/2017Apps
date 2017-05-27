@@ -28,8 +28,18 @@
            });
     };
 
-    self.operation = function (account, onSuccess) {
-        $http.put($rootScope.iStoreUrl + '/account', account).
+    self.deposit = function (account, onSuccess) {
+        $http.put($rootScope.iStoreUrl + '/account/deposit', account).
+        success(function (data, status, headers, config) {
+            (onSuccess || angular.noop)(data);
+        }).
+        error(function (data, status, headers, config) {
+            alert("Error - Data:" + data + " status:" + status);
+        });
+    };
+
+    self.buy = function (account, onSuccess) {
+        $http.put($rootScope.iStoreUrl + '/account/buy', account).
         success(function (data, status, headers, config) {
             (onSuccess || angular.noop)(data);
         }).

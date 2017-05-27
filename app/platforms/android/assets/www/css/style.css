@@ -8,13 +8,23 @@
 
 .row:nth-child(odd) .col.colored {
     background-color: #FFFFFF;
+    text-align: center;
 }
 
 .row:nth-child(even) .col.colored {
     background-color: #F0F0F0;
+    text-align: center;
 }
 
 .row.header .col.colored {
     background-color: #BEBEBE;
+    text-align: center;
 }
 
+.inline-buttonSet {
+    float: left;
+}
+
+.inline-buttonSet input {
+    float: left;
+}

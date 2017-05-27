@@ -1,0 +1,27 @@
+﻿<ion-modal-view>
+    <ion-header-bar class="bar bar-header bar-dark">
+        <h1 class="title">商品上架</h1>
+        <button class="button button-clear button-primary" ng-click="productsCtrl.hideModal()">取消</button>
+    </ion-header-bar>
+    <ion-content>
+        <div class="list">
+            <label class="item item-input">
+                <span class="input-label">商品名稱：</span>
+                <input type="text" ng-model="productsCtrl.product.name">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">商品價格：</span>
+                <input type="number" ng-model="productsCtrl.product.price">
+            </label>
+            <label class="item item-input">
+                <span class="input-label">商品圖片：</span>
+                <input type="text" ng-model="productsCtrl.product.url">
+            </label>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button class="button button-block button-dark" ng-click="productsCtrl.createProduct()">上架</button>
+            </div>
+        </div>
+    </ion-content>
+</ion-modal-view>

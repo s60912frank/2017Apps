@@ -1,36 +1,30 @@
 ﻿<ion-view title="帳戶作業">
+    <ion-nav-buttons side="right">
+        <button class="button icon-left ion-android-add-circle" ng-click="operationCtrl.gotoProducts()"> 商品採購</button>
+    </ion-nav-buttons>
+
     <ion-content scroll="false">
-        <div>
-            <div class="list list-inset">
-                <label class="item item-stable item-input">
-                    <span class="input-label" style="text-align:center">金額 : </span>
-                    <input type="number" ng-model="operationCtrl.amount" placeholder="{{!operationCtrl.isLoggedIn ? '請登入或開戶' : '請輸入金額'}}">
-                </label>
-                <label class="item item-stable item-input">
-                    <span class="input-label" style="text-align:center">餘額 : </span>
-                    <div ng-if="!operationCtrl.isLoggedIn">
-                        <p>尚未登入</p>
-                    </div>
-                    <div ng-if="operationCtrl.isLoggedIn">
-                        <p>{{operationCtrl.account.balance | currency:"":0 }}</p>
-                    </div>
-                </label>
-                <div class="message">
-                    <br>
-                    <p align="center">{{operationCtrl.showMessage}}</p>
+        <div class="list list-inset">
+            <label class="item item-stable item-input">
+                <span class="input-label" style="text-align:center">金額 : </span>
+                <input type="number" ng-model="operationCtrl.account.amount" placeholder="{{!operationCtrl.isLoggedIn ? '請登入或開戶' : '請輸入金額'}}">
+            </label>
+            <label class="item item-stable item-input">
+                <span class="input-label" style="text-align:center">餘額 : </span>
+                <div ng-if="!operationCtrl.isLoggedIn">
+                    <p>尚未登入</p>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col col-50">
-                    <button class="button button-block button-dark" ng-click="operationCtrl.deposit()">
-                        儲值
-                    </button>
+                <div ng-if="operationCtrl.isLoggedIn">
+                    <p>{{operationCtrl.account.balance | currency:"":0}}</p>
                 </div>
-                <div class="col col-50">
-                    <button class="button button-block button-dark" ng-click="operationCtrl.buy()">
-                        消費
-                    </button>
-                </div>
+            </label>
+        </div>
+
+        <div class="row">
+            <div class="col">
+                <button class="button button-block button-dark" ng-click="operationCtrl.deposit()">
+                    儲值
+                </button>
             </div>
         </div>
     </ion-content>

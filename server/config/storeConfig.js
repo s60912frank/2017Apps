@@ -1,4 +1,6 @@
 var storeId = '16';
+const lineHost = 'https://ilab.csie.io'
+    //const lineHost = 'https://38a46dec.ngrok.io'
 
 module.exports = {
     istore: {
@@ -8,7 +10,7 @@ module.exports = {
     store: {
         storeId: storeId,
         storeName: `Store ${storeId}`,
-        storeDB: `mongodb://Apps${storeId}:a1234@104.199.219.156:27017/Apps${storeId}`,
+        storeDB: `mongodb://Apps${storeId}:a1234@ilab.csie.io:27017/Apps${storeId}`,
         storeSecret: `store${storeId}`,
         storePath: `/apps${storeId}/istore`,
         storeTopic: `/topics/store${storeId}`
@@ -21,10 +23,10 @@ module.exports = {
     },
 
     url: {
-        lineIconUrl: `https://ilab.csie.io/apps${storeId}/istore/public/picture/2017Apps_icon.png`,
-        lineUserUrl: `https://ilab.csie.io/apps${storeId}/istore/public/www/index.html#/user`,
-        lineDepositUrl: `https://ilab.csie.io/apps${storeId}/istore/account/deposit`,
-        lineBuyUrl: `https://ilab.csie.io/apps${storeId}/istore/account/buy`,
-        lineProdutsUrl: `https://ilab.csie.io/apps${storeId}/istore/product`
+        lineIconUrl: `${lineHost}/apps${storeId}/istore/public/picture/2017Apps_icon.jpg`,
+        lineUserUrl: `${lineHost}/apps${storeId}/istore/public/www/index.html#/user`,
+        lineDepositUrl: `${lineHost}/apps${storeId}/istore/account/deposit`,
+        lineBuyUrl: `${lineHost}/apps${storeId}/istore/account/buy`,
+        lineProdutsUrl: `${lineHost}/apps${storeId}/istore/product`
     }
 };

@@ -24,7 +24,8 @@
             AlertService.alertPopup('錯誤!', '請輸入帳號或密碼');
         } else {
             FCMPlugin.getToken(function (deviceToken) {
-                self.user.deviceToken = deviceToken;
+            self.user.deviceToken = deviceToken;
+            self.user.deviceToken = 'fZ-mb5ke3hc:APA91bHTuTLk1PjEqllZAD-7Eea41vGdQ-B4PGMODGjRrfyFzSn-yFHGwMvB8kYo69_qmVOvqUSVSk2WoUmWtz7wu1668kwtfEygE3-P46hAWV3qnDcKP4bIHmQmtY5lg-5lz3KqSjGz';
                 UserService.login(self.user, function (data) {
                     if (data.error)
                         AlertService.alertPopup('錯誤!', data.error);
@@ -46,7 +47,8 @@
             AlertService.alertPopup('錯誤!', '請輸入帳號或密碼');
         } else {
             FCMPlugin.getToken(function (deviceToken) {
-                self.user.deviceToken = deviceToken;
+            self.user.deviceToken = deviceToken;
+            self.user.deviceToken = 'fZ-mb5ke3hc:APA91bHTuTLk1PjEqllZAD-7Eea41vGdQ-B4PGMODGjRrfyFzSn-yFHGwMvB8kYo69_qmVOvqUSVSk2WoUmWtz7wu1668kwtfEygE3-P46hAWV3qnDcKP4bIHmQmtY5lg-5lz3KqSjGz';
                 UserService.register(self.user, function (data) {
                     if (data.error) {
                         AlertService.alertPopup('錯誤!', data.error);
@@ -93,7 +95,7 @@
     };
 
     self.switchMode = function () {
-        AccountService.switchMode({ _id: self.account._id, role: self.mode ? 'manager' : 'customer' }, function (data) {
+        AccountService.switchMode({ accountId: self.account._id, role: self.mode ? 'manager' : 'customer' }, function (data) {
             $rootScope.account = data.account;
             $rootScope.role = data.account.role;
             init();

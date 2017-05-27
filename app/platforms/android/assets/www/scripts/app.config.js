@@ -24,7 +24,7 @@
             cache: false,
             params: {
                 account: null
-            }, 
+            },
             views: {
                 'tabContent-transactions': {
                     templateUrl: 'views/transactions.html',
@@ -49,7 +49,7 @@
             cache: false,
             params: {
                 account: null
-            }, 
+            },
             views: {
                 'tabContent-messages': {
                     templateUrl: 'views/messages.html',
@@ -62,8 +62,9 @@
             url: '/sendMessage',
             cache: false,
             params: {
-                accounts: null
-            }, 
+                accounts: null,
+                sale: null
+            },
             views: {
                 'tabContent-sendMessage': {
                     templateUrl: 'views/sendMessage.html',
@@ -83,8 +84,19 @@
                 }
             }
         })
+        .state('tab.products', {
+            url: '/products',
+            cache: false,
+            views: {
+                'tabContent-products': {
+                    templateUrl: 'views/products.html',
+                    controller: 'ProductsController',
+                    controllerAs: 'productsCtrl'
+                }
+            }
+        })
+
     $ionicConfigProvider.tabs.position('bottom');
     $ionicConfigProvider.navBar.alignTitle('center');
     $httpProvider.interceptors.push('tokenInterceptor');
-
 }]);

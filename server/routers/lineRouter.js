@@ -15,14 +15,14 @@ var lineBot = require('../helpers/lineBot');
 
 var Messages = LineBot.Messages;
 
-router.post('/product', user.can('linePushProducts'), function (req, res) {
-    async.waterfall([function (next) {
-        User.find({}).select('lineId').exec(function (err, users) {
+router.post('/product', user.can('linePushProducts'), function(req, res) {
+    async.waterfall([function(next) {
+        User.find({}).select('lineId').exec(function(err, users) {
             if (err)
                 return res.json({ error: '帳號錯誤' });
             else {
                 var lineIds = [];
-                users.filter(function (user) {
+                users.filter(function(user) {
                     if (user.lineId !== undefined && user.lineId !== null) {
                         lineIds.push(user.lineId);
                     }
@@ -30,13 +30,13 @@ router.post('/product', user.can('linePushProducts'), function (req, res) {
                 next(null, lineIds);
             }
         })
-    }, function (lineIds, next) {
-        Product.find({ _id: { $in: req.body.productIds } }).exec(function (err, products) {
+    }, function(lineIds, next) {
+        Product.find({ _id: { $in: req.body.productIds } }).exec(function(err, products) {
             if (err)
                 res.json({ error: '產品錯誤' });
             else {
                 var columns = [];
-                products.filter(function (product) {
+                products.filter(function(product) {
                     columns.push({
                         thumbnailImageUrl: product.imageUrl,
                         title: `特價商品:${product.name}`,
@@ -48,6 +48,7 @@ router.post('/product', user.can('linePushProducts'), function (req, res) {
                         }]
                     })
                 });
+                console.log(columns)
                 var pushMessages = new Messages().addCarousel({
                     altText: '購物列表',
                     columns: columns
@@ -55,27 +56,27 @@ router.post('/product', user.can('linePushProducts'), function (req, res) {
                 next(null, lineIds, pushMessages);
             }
         })
-    }, function (lineIds, pushMessages) {
+    }, function(lineIds, pushMessages) {
         lineBot.multicast(lineIds, pushMessages.commit())
-            .then(function () {
+            .then(function() {
                 var roleToken = jwt.sign({ role: req.user.role }, storeSecret, { expiresIn: '30m' });
                 res.header('Authorization', `Bearer ${roleToken}`);
                 return res.json({});
-            }).catch(function (err) {
+            }).catch(function(err) {
                 console.log(err);
                 res.json({ error: '推播錯誤' });
             });
     }]);
 });
 
-router.post('/location', user.can('linePushLocation'), function (req, res) {
-    async.waterfall([function (next) {
-        User.find({}).select('lineId').exec(function (err, users) {
+router.post('/location', user.can('linePushLocation'), function(req, res) {
+    async.waterfall([function(next) {
+        User.find({}).select('lineId').exec(function(err, users) {
             if (err)
                 return res.json({ error: '帳號錯誤' });
             else {
                 var lineIds = [];
-                users.filter(function (user) {
+                users.filter(function(user) {
                     if (user.lineId !== undefined && user.lineId !== null) {
                         lineIds.push(user.lineId);
                     }
@@ -83,9 +84,9 @@ router.post('/location', user.can('linePushLocation'), function (req, res) {
                 next(null, lineIds);
             }
         })
-    }, function (lineIds) {
+    }, function(lineIds) {
         axios.get(`http://maps.googleapis.com/maps/api/geocode/json?address=${encodeURI(req.body.address)}`)
-            .then(function (response) {
+            .then(function(response) {
                 var pushMessages = new Messages().addLocation({
                     title: '特賣會商品',
                     address: req.body.address,
@@ -93,14 +94,14 @@ router.post('/location', user.can('linePushLocation'), function (req, res) {
                     longitude: response.data.results[0].geometry.location.lng
                 })
                 lineBot.multicast(lineIds, pushMessages.commit())
-                    .then(function () {
+                    .then(function() {
                         var roleToken = jwt.sign({ role: req.user.role }, storeSecret, { expiresIn: '30m' });
                         res.header('Authorization', `Bearer ${roleToken}`);
                         return res.json({});
-                    }).catch(function () {
+                    }).catch(function() {
                         res.json({ error: '推播錯誤' });
                     });
-            }).catch(function (err) {
+            }).catch(function(err) {
                 res.json({ error: '轉址錯誤' });
             });
     }]);

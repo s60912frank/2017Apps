@@ -8,7 +8,7 @@
         <param name="android-package" value="com.gae.scaffolder.plugin.FCMPlugin" />
         <param name="onload" value="true" />
     </feature>
-    <name>16_hw9</name>
+    <name>16_hw10</name>
     <description>
         A not that useful app.
     </description>

@@ -41,8 +41,10 @@ app.all('*', expressJwt({ secret: storeSecret })
     .unless({
         path: [
             { url: `${storePath}/user/login` },
-            { url: `${storePath}/user`, methods: ['POST'] }]
-    }), function (req, res, next) {
+            { url: `${storePath}/user`, methods: ['POST'] }
+        ]
+    }),
+    function(req, res, next) {
         next();
     });
 
@@ -51,13 +53,14 @@ app.use(`${storePath}/account`, accountRouter);
 app.use(`${storePath}/product`, productRouter);
 app.use(`${storePath}/line`, linePushRouter);
 
-app.use(function (req, res, next) {
+
+app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
 
-app.use(function (err, req, res, next) {
+app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.json({ error: 'Service Not Found' });
 });

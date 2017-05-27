@@ -1,0 +1,35 @@
+﻿<ion-view title="商品列表">
+    <ion-nav-buttons side="left">
+        <button class="button icon-left ion-bag" ng-click="productsCtrl.sendSale()" ng-show="productsCtrl.account.role === 'manager'"> 特賣推播</button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+        <button class="button icon-left ion-android-add-circle" ng-click="productsCtrl.showModal()" ng-show="productsCtrl.account.role === 'manager'"> 商品上架</button>
+        <button class="button icon-left ion-social-usd" ng-click="productsCtrl.gotoOperation()" ng-show="productsCtrl.account.role === 'customer'"> 帳戶儲值</button>
+    </ion-nav-buttons>
+
+    <ion-content>
+        <ion-list>
+            <div>
+                <div class="row header">
+                    <div class="col col-15 colored">序號</div>
+                    <div class="col colored">名稱</div>
+                    <div class="col colored">價格</div>
+                    <div class="col colored">
+                        <div class="inline-buttonSet" ng-show="productsCtrl.account.role === 'manager'">
+                            <input type="button" value="商品推播" ng-click="productsCtrl.sendProducts()" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" ng-repeat="product in productsCtrl.products">
+                    <div class="col col-15 colored">{{product._id}}</div>
+                    <div class="col colored">{{product.name}}</div>
+                    <div class="col colored">{{product.price}}</div>
+                    <div class="col colored">
+                        <input type="checkbox" checklist-model="productsCtrl.productIds" checklist-value="product._id" ng-show="productsCtrl.account.role === 'manager'" />
+                        <input type="button" value="採購" ng-click="productsCtrl.buy(product)" ng-show="productsCtrl.account.role === 'customer'" />
+                    </div>
+                </div>
+            </div>
+        </ion-list>
+    </ion-content>
+</ion-view>

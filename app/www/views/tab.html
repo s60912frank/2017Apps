@@ -7,9 +7,13 @@
         <ion-nav-view name="tabContent-accounts"></ion-nav-view>
     </ion-tab>
 
-    <ion-tab id="transactions" hidden="{{!tabCtrl.roleIs('customer') && !tabCtrl.roleIs('manager')}}" title="交易明細" icon="ion-ios-paper" ng-click="tabCtrl.goto('transactions')">
+    <ion-tab id="transactions" hidden="{{!tabCtrl.roleIs('customer')}}" title="交易明細" icon="ion-ios-paper" ng-click="tabCtrl.goto('transactions')">
         <ion-nav-view name="tabContent-transactions"></ion-nav-view>
     </ion-tab>
+
+    <ion-tab id="messages" hidden="{{!tabCtrl.roleIs('manager')}}" title="商品列表" icon="ion-ios-cart" ng-click="tabCtrl.goto('products')">
+        <ion-nav-view name="tabContent-products"></ion-nav-view>
+    </ion-tab>    
 
     <ion-tab id="messages" hidden="{{!tabCtrl.roleIs('customer')}}" title="優惠訊息" icon="ion-paper-airplane" ng-click="tabCtrl.goto('messages')">
         <ion-nav-view name="tabContent-messages"></ion-nav-view>
@@ -17,7 +21,7 @@
 
     <ion-tab id="messages" hidden="{{!tabCtrl.roleIs('manager')}}" title="優惠訊息" icon="ion-paper-airplane" ng-click="tabCtrl.goto('sendMessage')">
         <ion-nav-view name="tabContent-sendMessage"></ion-nav-view>
-    </ion-tab>
+    </ion-tab>   
 
     <ion-tab id="user" title="帳戶設定" icon="ion-ios-gear" ng-click="tabCtrl.goto('user')">
         <ion-nav-view name="tabContent-user"></ion-nav-view>

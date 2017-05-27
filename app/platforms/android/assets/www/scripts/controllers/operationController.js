@@ -1,4 +1,4 @@
-angular.module('2017Apps').controller('OperationController', ['$rootScope', '$ionicPopup', '$timeout', '$filter', 'AlertService', 'AccountService', function ($rootScope, $ionicPopup, $timeout, $filter, AlertService, AccountService) {
+angular.module('2017Apps').controller('OperationController', ['$rootScope', '$ionicPopup', '$state', '$filter', 'AlertService', 'AccountService', 'ProductService', function ($rootScope, $ionicPopup, $state, $filter, AlertService, AccountService, ProductService) {
     var self = this;
     var init = function () {
         if (typeof $rootScope.account === 'undefined')
@@ -6,6 +6,13 @@ angular.module('2017Apps').controller('OperationController', ['$rootScope', '$io
         else {
             self.isLoggedIn = true;
             self.account = $rootScope.account;
+
+            ProductService.getProducts(function (data) {
+                if (data.error)
+                    AlertService.alertPopup('錯誤！', data.error);
+                else
+                    self.products = data.products;
+            });
         }
     }
 
@@ -14,31 +21,18 @@ angular.module('2017Apps').controller('OperationController', ['$rootScope', '$io
     self.deposit = function () {
         if (self.isLoggedIn === false)
             AlertService.alertPopup('錯誤!', '請登入或開戶');
-        else if (!self.amount)
+        else if (!self.account.amount)
             AlertService.alertPopup('錯誤!', '請輸入金額');
         else {
-            self.account.amount = self.amount;
-            AccountService.operation(self.account, function (data) {
-                $rootScope.account.balance = data.account.balance;
+            AccountService.deposit({ accountId: self.account._id, amount: self.account.amount }, function (data) {
+                $rootScope.account.balance = data.account.balance;                
                 AlertService.alertPopup('帳戶作業', $rootScope.account.name + ' 已儲值 ' + $filter('currency')(self.account.amount, '', 0) + '元', 'tab.transactions');
+                self.account.amount = '';
             });
         }
-    }
+    }   
 
-    self.buy = function () {
-        if (self.isLoggedIn === false)
-            AlertService.alertPopup('錯誤!', '請登入或開戶');
-        else if (!self.amount)
-            AlertService.alertPopup('錯誤!', '請輸入金額');
-        else if (self.amount > self.account.balance)
-            AlertService.alertPopup('錯誤!', '餘額不足');
-        else {
-            self.account.amount = self.amount * -1;
-            AccountService.operation(self.account, function (data) {
-                $rootScope.account.balance = data.account.balance;
-                self.account.amount = Math.abs(self.account.amount);
-                AlertService.alertPopup('帳戶作業', $rootScope.account.name + ' 已消費 ' + $filter('currency')(Math.abs(self.account.amount), '', 0) + '元', 'tab.transactions');
-            });
-        }
-    }
+    self.gotoProducts = function () {
+        $state.go('tab.products');
+    };
 }]);

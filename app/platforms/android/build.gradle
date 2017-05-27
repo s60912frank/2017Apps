@@ -31,6 +31,7 @@ buildscript {
     // and https://issues.apache.org/jira/browse/CB-8143
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.1'
+        classpath 'com.google.gms:google-services:+'
     }
 }
 
@@ -250,8 +251,8 @@ dependencies {
     // SUB-PROJECT DEPENDENCIES START
     debugCompile(project(path: "CordovaLib", configuration: "debug"))
     releaseCompile(project(path: "CordovaLib", configuration: "release"))
-    compile "com.google.firebase:firebase-core:+"
-    compile "com.google.firebase:firebase-messaging:+"
+    compile "com.google.firebase:firebase-core:9.0.0"
+    compile "com.google.firebase:firebase-messaging:9.0.0"
     // SUB-PROJECT DEPENDENCIES END
 }
 
