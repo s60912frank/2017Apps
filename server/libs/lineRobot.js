@@ -1,125 +1,84 @@
 var { storeId } = require('../config/storeConfig').store;
 var { lineJwt } = require('../config/storeConfig').line;
-var { lineIconUrl, lineUserUrl, lineDepositUrl, lineBuyUrl, lineProdutsUrl } = require('../config/storeConfig').url;
-var LineBot = require('node-line-messaging-api');
+var { lineIconUrl, lineUserUrl } = require('../config/storeConfig').url;
 var lineBot = require('../helpers/lineBot');
 
-var async = require('async'),
-    axios = require('axios');
+var Messages = require('node-line-messaging-api').Messages;
+const op = require('./operation')
 
-var User = require('../models/userModel'),
-    Account = require('../models/accountModel'),
-    Transaction = require('../models/transactionModel');
+module.exports = async(event) => {
+    let message = new Messages()
+    switch (event.type) {
+        case 'follow':
+            message.addButtons({
+                thumbnailImageUrl: lineIconUrl,
+                altText: '帳戶設定',
+                title: 'Line@iStore',
+                text: '歡迎使用Line@iStore口袋商店',
+                actions: [{
+                    "type": "uri",
+                    "label": "進入iStore",
+                    "uri": `${lineUserUrl}?lineId=${event.source.userId}`
+                }]
+            })
+            break;
+        case 'message':
+            var { text } = event.message;
+            console.log(text)
 
-var Messages = LineBot.Messages;
-
-lineBot.on('follow', function(event) {
-    var { replyToken } = event;
-    var lineMessages = new Messages().addButtons({
-        thumbnailImageUrl: lineIconUrl,
-        altText: '帳戶設定',
-        title: 'Line@iStore',
-        text: '歡迎使用Line@iStore口袋商店',
-        actions: [{
-            "type": "uri",
-            "label": "進入iStore",
-            "uri": `${lineUserUrl}?lineId=${event.source.userId}`
-        }]
-    })
-    lineBot.replyMessage(replyToken, lineMessages.commit());
-});
-
-lineBot.on('message', function(event) {
-    var { text } = event.message;
-    var { replyToken } = event;
-    var lineMessages = new Messages();
-
-    const depositPattern = /^\u5132\u503c\d+\u5143$/
-    console.log(text)
-
-    if (text.indexOf('儲值') != -1) {
-        if (depositPattern.test(text)) {
-            var amount = text.substring(2, text.length - 1);
-            axios({
-                method: 'put',
-                url: lineDepositUrl,
-                headers: { Authorization: lineJwt },
-                data: { lineId: event.source.userId, amount: amount },
-            }).then(function(response) {
-                if (response.data.error) {
-                    lineMessages.addText(response.data.error);
-                    lineBot.replyMessage(replyToken, lineMessages.commit());
-                } else {
-                    var account = response.data.account;
-                    lineMessages.addText(`商店:Store${storeId}\n帳戶:${account.name}\n餘額:${account.balance}`);
-                    lineBot.replyMessage(replyToken, lineMessages.commit());
-                }
-            }).catch(function(err) {
-                lineMessages.addText('儲值錯誤');
-                lineBot.replyMessage(replyToken, lineMessages.commit());
-            });
-        } else {
-            lineMessages.addText('若要儲值,請依以下格式輸入:儲值{數字}元');
-            lineBot.replyMessage(replyToken, lineMessages.commit());
-        }
-    } else if (text === '商品') {
-        axios({
-            method: 'get',
-            url: lineProdutsUrl,
-            headers: { Authorization: lineJwt }
-        }).then(function(response) {
-            if (response.data.error) {
-                lineMessages.addText('商品錯誤');
-                lineBot.replyMessage(replyToken, lineMessages.commit());
+            if (text == '儲值') {
+                let amount = text.substring(2, text.length - 1)
+                await op.depositIntention({ lineId: event.source.userId })
+                    .then(result => message.addText(result))
+                    .catch(err => message.addText(err))
+            } else if (text === '商品') {
+                var columns = []
+                await op.getProduct(event.source.userId)
+                    .then((result) => {
+                        result.products.filter((product) => {
+                            columns.push({
+                                thumbnailImageUrl: product.imageUrl,
+                                title: `特價商品:${product.name}`,
+                                text: `價格:${product.price}`,
+                                actions: [{
+                                    "type": "postback",
+                                    "label": "購買",
+                                    "data": `{"productId":${product._id}}`
+                                }]
+                            })
+                        });
+                        message.addCarousel({ altText: 'iStore商品列表', columns });
+                    }).catch(err => message.addText(err))
+            } else if (!isNaN(text)) {
+                await op.deposit({ lineId: event.source.userId, amount: text })
+                    .then(result => message.addText(`商店:Store${storeId}\n帳戶:${result.account.name}\n餘額:${result.account.balance}`))
+                    .catch(err => message.addText(err))
             } else {
-                var products = response.data.products;
-                var columns = [];
-                products.filter(function(product) {
-                    columns.push({
-                        thumbnailImageUrl: product.imageUrl,
-                        title: `特價商品:${product.name}`,
-                        text: `價格:${product.price}`,
-                        actions: [{
-                            "type": "postback",
-                            "label": "購買",
-                            "data": `{"productId":${product._id}}`
-                        }]
-                    })
-                });
-                lineMessages.addCarousel({ altText: 'iStore商品列表', columns: columns });
-                lineBot.replyMessage(replyToken, lineMessages.commit());
+                await op.getAccount({ lineId: event.source.userId }).then(account => {
+                    if (account.isDepositing) {
+                        message.addText('儲值動作已經取消')
+                        account.isDepositing = false
+                        account.save(err => {})
+                    } else message.addText('未知指令，請利用下方選單操作喔!')
+                })
             }
-        }).catch(function(err) {
-            lineMessages.addText('商品錯誤');
-            lineBot.replyMessage(replyToken, lineMessages.commit())
-        });
-    } else {
-        lineMessages.addText('本帳號無法對個別用戶回覆喔!');
-        lineBot.replyMessage(replyToken, lineMessages.commit())
+            break;
+        case 'postback':
+            var data = JSON.parse(event.postback.data);
+
+            await op.buy({ lineId: event.source.userId, productId: data.productId })
+                .then(result => message.addText(`商店:Store${storeId}\n帳戶:${result.account.name}\n餘額:${result.account.balance}`))
+                .catch(err => message.addText(err))
+            break;
+        default:
+            await op.getAccount({ lineId: event.source.userId }).then(account => {
+                if (account.isDepositing) {
+                    message.addText('儲值動作已經取消')
+                    account.isDepositing = false
+                    account.save(err => {})
+                } else message.addText('未知指令，請利用下方選單操作喔!')
+            })
+            break;
     }
-});
-
-lineBot.on('postback', function(event) {
-    var data = JSON.parse(event.postback.data);
-
-    var { replyToken } = event;
-    var lineMessages = new Messages();
-    axios({
-        method: 'put',
-        url: lineBuyUrl,
-        headers: { Authorization: lineJwt },
-        data: { lineId: event.source.userId, productId: data.productId },
-    }).then(function(response) {
-        if (response.data.error) {
-            lineMessages.addText(response.data.error);
-            lineBot.replyMessage(replyToken, lineMessages.commit());
-        } else {
-            var account = response.data.account;
-            lineMessages.addText(`商店:Store${storeId}\n帳戶:${account.name}\n餘額:${account.balance}`);
-            lineBot.replyMessage(replyToken, lineMessages.commit());
-        }
-    }).catch(function(err) {
-        lineMessages.addText('採購錯誤');
-        lineBot.replyMessage(replyToken, lineMessages.commit());
-    });
-});
+    return (message.commit().length != 0) ? lineBot.client.replyMessage(event.replyToken, message.commit()) : undefined
+}

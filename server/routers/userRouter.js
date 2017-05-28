@@ -36,6 +36,7 @@ router.post('/login', function(req, res) {
                 else if (errInfo.name === 'IncorrectUsernameError')
                     return res.json({ error: '帳號不存在' });
             } else {
+                console.log(req.body.lineId)
                 user.update({ $set: { deviceToken: req.body.deviceToken ? req.body.deviceToken : user.deviceToken, lineId: req.body.lineId ? req.body.lineId : user.lineId } }, function(err) {
                     if (err)
                         return res.json({ error: '裝置註冊錯誤' });

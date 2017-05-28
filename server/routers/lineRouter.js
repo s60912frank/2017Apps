@@ -11,11 +11,10 @@ var jwt = require('jsonwebtoken'),
     user = require('../helpers/accessControl');
 
 var LineBot = require('node-line-messaging-api');
-var lineBot = require('../helpers/lineBot');
 
 var Messages = LineBot.Messages;
 
-router.post('/product', user.can('linePushProducts'), function(req, res) {
+router.post('/product', user.can('linePushProducts'), function(req, res) { //這也可改
     async.waterfall([function(next) {
         User.find({}).select('lineId').exec(function(err, users) {
             if (err)
@@ -106,5 +105,13 @@ router.post('/location', user.can('linePushLocation'), function(req, res) {
             });
     }]);
 });
+
+var { middleware } = require('../helpers/lineBot')
+let replyLogic = require('../libs/lineRobot')
+router.post('/webhook', middleware, (req, res) => {
+    Promise
+        .all(req.body.events.map(replyLogic))
+        .then((result) => res.json(result));
+})
 
 module.exports = router;

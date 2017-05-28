@@ -35,11 +35,13 @@ app.use(passport.initialize());
 passport.use(new LocalStrategy(User.authenticate()));
 app.use(user.middleware());
 
-app.use(`${storePath}/public`, express.static('public'));
+app.use(`${storePath}/public`, express.static(__dirname + '/public'));
+app.use(`${storePath}/line`, linePushRouter);
 
 app.all('*', expressJwt({ secret: storeSecret })
     .unless({
         path: [
+            { url: `favico.ico` },
             { url: `${storePath}/user/login` },
             { url: `${storePath}/user`, methods: ['POST'] }
         ]
@@ -51,10 +53,10 @@ app.all('*', expressJwt({ secret: storeSecret })
 app.use(`${storePath}/user`, userRouter);
 app.use(`${storePath}/account`, accountRouter);
 app.use(`${storePath}/product`, productRouter);
-app.use(`${storePath}/line`, linePushRouter);
+//app.use(`${storePath}/line`, linePushRouter);
 
 
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -63,6 +65,6 @@ app.use(function(req, res, next) {
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.json({ error: 'Service Not Found' });
-});
+});*/
 
 module.exports = app;
