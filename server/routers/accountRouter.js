@@ -8,8 +8,8 @@ var { storeId, storeSecret, storeTopic, istoreJwt } = require('../config/storeCo
     Transaction = require('../models/transactionModel'),
     Product = require('../models/productModel');
 
-var passport = require('passport'),
-    jwt = require('jsonwebtoken'),
+//var passport = require('passport'),
+var jwt = require('jsonwebtoken'),
     user = require('../helpers/accessControl');
 
 var FCM = require('fcm-push'),
@@ -28,7 +28,7 @@ router.post('/', expressJwt({ secret: 'apps2017' }), user.can('openAccount'), (r
             balance: 0,
             role: req.user.role,
             user: req.body.userId,
-            lineId: req.body.lineId ? req.body.lineId : null //why
+            lineId: req.body.lineId ? req.body.lineId : null
         }, (err, account) => {
             if (err) rej('帳戶已存在')
             else res(account)
@@ -77,10 +77,15 @@ router.post('/', expressJwt({ secret: 'apps2017' }), user.can('openAccount'), (r
 });
 
 router.post('/login', expressJwt({ secret: 'apps2017' }), user.can('loginAccount'), (req, res) => {
-    let accountName = req.body.username.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
-    Account.findOne({ user: req.body.userId, name: accountName }, (err, account) => {
+    //let accountName = req.body.username.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
+    console.log(req.body)
+    Account.findOne({ _id: req.body.accountId }, (err, account) => {
         if (err || !account) return res.json({ error: '帳戶錯誤' });
         else {
+            if (req.body.lineId) {
+                account.lineId = req.body.lineId
+                account.save((err) => err ? console.log(err) : console.log('GOOD'))
+            }
             var roleToken = jwt.sign({ role: account ? account.role : 'customer' }, storeSecret, { expiresIn: '30m' });
             res.header('Authorization', `Bearer ${roleToken}`);
             return res.json({ loginUser: { _id: req.body.userId, username: req.body.username }, account });
@@ -221,11 +226,11 @@ router.post('/message', user.can('sendMessage'), (req, res) => {
             })
             .then(res()) //could boom
             .catch(rej('訊息發送錯誤'))
-    }).then(new Promise((res, rej) => {
+    }).then(() => new Promise((res, rej) => {
         Message.create({ title: req.body.title, content: req.body.content }, (err, message) => err ? rej('訊息儲存錯誤') : res(message._id))
     })).then(msgId => {
         let condition = (req.body.accountIds) ? { _id: { $in: req.body.accountIds } } : {}
-        Account.update(condition, { "$addToSet": { "messages": msgId } }, { multi: true }, (err, accounts) => err ? res.json({ error: '訊息儲存錯誤' }) : res.json({}))
+        Account.update(condition, { "$addToSet": { "messages": msgId } }, { multi: true }, (err, accounts) => err ? rej('訊息儲存錯誤') : res.json({}))
     }).catch(err => res.json({ error: err }))
 
 

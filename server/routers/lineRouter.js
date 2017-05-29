@@ -11,12 +11,61 @@ var jwt = require('jsonwebtoken'),
     user = require('../helpers/accessControl');
 
 var LineBot = require('node-line-messaging-api');
+let lineBot = require('../helpers/lineBot').client
 
 var Messages = LineBot.Messages;
 
 router.post('/product', user.can('linePushProducts'), function(req, res) { //這也可改
-    async.waterfall([function(next) {
-        User.find({}).select('lineId').exec(function(err, users) { //這裡要改,user已經不再我們這了
+    //promise Approach
+    new Promise((res, rej) => {
+        Account.find({}).select('lineId').exec(function(err, users) {
+            if (err) rej('帳號錯誤');
+            else {
+                var lineIds = [];
+                users.filter((user) => {
+                    if (user.lineId !== undefined && user.lineId !== null) {
+                        lineIds.push(user.lineId);
+                    }
+                });
+                res(lineIds)
+            }
+        })
+    }).then((lineIds) => new Promise((res, rej) => {
+        Product.find({ _id: { $in: req.body.productIds } }).exec((err, products) => {
+            if (err) rej('產品錯誤');
+            else {
+                var columns = [];
+                products.filter(function(product) {
+                    columns.push({
+                        thumbnailImageUrl: product.imageUrl,
+                        title: `特價商品:${product.name}`,
+                        text: `價格:${product.price}`,
+                        actions: [{
+                            "type": "postback",
+                            "label": "購買",
+                            "data": `{"productId":${product._id}}`
+                        }]
+                    })
+                });
+                var pushMessages = new Messages().addCarousel({
+                    altText: '購物列表',
+                    columns: columns
+                });
+                res({ lineIds, msgs: pushMessages.commit() });
+            }
+        })
+    })).then(data => new Promise((resolve, rej) => {
+        lineBot.multicast(data.lineIds, data.msgs)
+            .then(() => {
+                var roleToken = jwt.sign({ role: req.user.role }, storeSecret, { expiresIn: '30m' });
+                res.header('Authorization', `Bearer ${roleToken}`);
+                return res.json({});
+            }).catch(err => rej('推播錯誤'))
+    })).catch(err => res.json({ error: err }))
+
+    //old
+    /*async.waterfall([function(next) {
+        Account.find({}).select('lineId').exec(function(err, users) {
             if (err)
                 return res.json({ error: '帳號錯誤' });
             else {
@@ -65,12 +114,12 @@ router.post('/product', user.can('linePushProducts'), function(req, res) { //這
                 console.log(err);
                 res.json({ error: '推播錯誤' });
             });
-    }]);
+    }]);*/
 });
 
 router.post('/location', user.can('linePushLocation'), function(req, res) { //這裡要改,user已經不再我們這了
     async.waterfall([function(next) {
-        User.find({}).select('lineId').exec(function(err, users) {
+        Account.find({}).select('lineId').exec(function(err, users) {
             if (err)
                 return res.json({ error: '帳號錯誤' });
             else {

@@ -3,7 +3,6 @@
     self.avaliableStore = ['00', '01', '02', '03', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25']
 
     var init = function() {
-        //AlertService.alertPopup("幹!", JSON.stringify($rootScope.user))
         if (typeof $rootScope.user === 'undefined') {
             self.isLoggedIn = false;
             self.user = {
@@ -29,13 +28,12 @@
         } else {
             FCMPlugin.getToken(function(deviceToken) {
                 self.user.deviceToken = deviceToken;
-                self.user.deviceToken = 'fZ-mb5ke3hc:APA91bHTuTLk1PjEqllZAD-7Eea41vGdQ-B4PGMODGjRrfyFzSn-yFHGwMvB8kYo69_qmVOvqUSVSk2WoUmWtz7wu1668kwtfEygE3-P46hAWV3qnDcKP4bIHmQmtY5lg-5lz3KqSjGz';
+                //self.user.deviceToken = 'fZ-mb5ke3hc:APA91bHTuTLk1PjEqllZAD-7Eea41vGdQ-B4PGMODGjRrfyFzSn-yFHGwMvB8kYo69_qmVOvqUSVSk2WoUmWtz7wu1668kwtfEygE3-P46hAWV3qnDcKP4bIHmQmtY5lg-5lz3KqSjGz';
                 UserService.login(self.user, function(data) {
                     if (data.error)
                         AlertService.alertPopup('錯誤!', data.error);
                     else {
                         $rootScope.user = data.loginUser;
-                        //$rootScope.user = data.loginUser;
                         init();
                     }
                 });
@@ -44,7 +42,7 @@
     };
 
     self.setCurrentStore = () => {
-        AlertService.alertPopup('幹!', JSON.stringify(self.user.accounts));
+        //AlertService.alertPopup('幹!', JSON.stringify(self.user.accounts));
         $rootScope.storeId = self.currentStore
         let found = -1
         for (let i = 0; i < self.user.accounts.length; i++) {
@@ -55,14 +53,14 @@
         }
         if (found > -1) {
             let account = self.user.accounts[found]
+                //AlertService.alertPopup('AC!', account);
             $rootScope.account = {}
             $rootScope.account.id = account.accountId
             $rootScope.storeId = account.storeId
-            AccountService.loginAccount(account, (data) => {
+            AccountService.loginAccount({ accountId: account.accountId }, (data) => {
                 if (data.error) {
                     AlertService.alertPopup('錯誤!', data.error);
                 } else {
-                    //AlertService.alertPopup('好!', '*城之內*');
                     FCMPlugin.subscribeToTopic($rootScope.storeTopic());
                     $rootScope.account = data.account;
                     $rootScope.role = data.account.role;

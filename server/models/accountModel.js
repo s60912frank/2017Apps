@@ -10,6 +10,7 @@ var accountSchema = new Schema({
     messages: [{ type: Number, ref: 'Message' }],
     role: { type: String },
     user: { type: Number },
+    lineId: { type: String },
     isDepositing: { type: Boolean, default: false }
 });
 

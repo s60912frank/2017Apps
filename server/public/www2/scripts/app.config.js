@@ -1,4 +1,4 @@
-﻿angular.module('2017Web').config(['$ionicConfigProvider', '$httpProvider', '$stateProvider', '$urlRouterProvider', function ($ionicConfigProvider, $httpProvider, $stateProvider, $urlRouterProvider) {
+﻿angular.module('2017Web').config(['$ionicConfigProvider', '$httpProvider', '$stateProvider', '$urlRouterProvider', ($ionicConfigProvider, $httpProvider, $stateProvider, $urlRouterProvider) => {
     $urlRouterProvider.otherwise('/user');
     $stateProvider
         .state('user', {

@@ -51,6 +51,7 @@ module.exports = async(event) => {
                     }).catch(err => message.addText(err))
             } else if (!isNaN(text)) {
                 await op.deposit({ lineId: event.source.userId, amount: text })
+                    //.catch(err => message.addText(err))
                     .then(result => message.addText(`商店:Store${storeId}\n帳戶:${result.account.name}\n餘額:${result.account.balance}`))
                     .catch(err => message.addText(err))
             } else {
@@ -71,13 +72,13 @@ module.exports = async(event) => {
                 .catch(err => message.addText(err))
             break;
         default:
-            await op.getAccount({ lineId: event.source.userId }).then(account => {
+            /*await op.getAccount({ lineId: event.source.userId }).then(account => {
                 if (account.isDepositing) {
                     message.addText('儲值動作已經取消')
                     account.isDepositing = false
                     account.save(err => {})
                 } else message.addText('未知指令，請利用下方選單操作喔!')
-            })
+            })*/
             break;
     }
     return (message.commit().length != 0) ? lineBot.client.replyMessage(event.replyToken, message.commit()) : undefined

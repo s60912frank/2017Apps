@@ -14,7 +14,7 @@ angular.module('2017Apps').factory('tokenInterceptor', ['$rootScope', '$window',
     return {
         request: function(config) {
             if (isiStoreToken(config)) {
-                if (token.iStore) config.headers.Authorization = token.iStore
+                if (token.iStore) config.headers.Authorization = token.iStore;
             } else {
                 if (token.app) config.headers.Authorization = token.app
             }

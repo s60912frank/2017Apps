@@ -5,19 +5,18 @@ var { storeId } = require('../config/storeConfig').store, { fcmServerKey } = req
     Product = require('../models/productModel');
 
 let getAccount = (data) => {
-    return new Promise((res, rej) => {
+    return (new Promise((res, rej) => {
         if (data.lineId) {
-            User.findOne({ lineId: data.lineId, accounts: { $elemMatch: { storeId } } }, (err, user) => { //這裡要改,user已經不再我們這了
-                if (err) rej('帳號錯誤')
-                else res(user.accounts[0].accountId)
+            Account.findOne({ lineId: data.lineId }, (err, account) => {
+                if (err) rej('帳戶錯誤')
+                else res(account)
             })
-        } else
-            res(data.accountId)
-    }).then(accountId => new Promise((res, rej) => {
-        Account.findById(accountId, (err, account) => {
-            if (err) rej('帳戶錯誤')
-            else res(account)
-        })
+        } else {
+            Account.findOne({ _id: data.accountId }, (err, account) => {
+                if (err) rej('帳戶錯誤')
+                else res(account)
+            })
+        }
     }))
 }
 
@@ -34,7 +33,12 @@ module.exports = {
             if (data.lineId && account.isDepositing) {
                 account.isDepositing = false
                 account.save(err => err ? rej(err) : res(account))
-            } else res(account)
+            } else {
+                //not work
+                //rej('若想儲值請點選下方選單!')
+                //work
+                setTimeout(() => rej('若想儲值請點選下方選單!'), 0);
+            }
         })).then(account => new Promise((res, rej) => {
             account.balance += parseInt(data.amount);
             Transaction.create({
