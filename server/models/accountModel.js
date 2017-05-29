@@ -9,7 +9,7 @@ var accountSchema = new Schema({
     transactions: [{ type: Number, ref: 'Transaction' }],
     messages: [{ type: Number, ref: 'Message' }],
     role: { type: String },
-    user: { type: Number, ref: 'User' },
+    user: { type: Number },
     isDepositing: { type: Boolean, default: false }
 });
 

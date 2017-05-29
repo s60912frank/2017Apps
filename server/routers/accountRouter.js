@@ -1,8 +1,8 @@
-var { storeId, storeSecret, storeTopic } = require('../config/storeConfig').store, { fcmServerKey } = require('../config/storeConfig').istore,
+var { storeId, storeSecret, storeTopic, istoreJwt } = require('../config/storeConfig').store, { fcmServerKey } = require('../config/storeConfig').istore,
     express = require('express'),
     router = express.Router(),
     async = require('async'),
-    User = require('../models/userModel'),
+    //User = require('../models/userModel'),
     Account = require('../models/accountModel'),
     Message = require('../models/messageModel'),
     Transaction = require('../models/transactionModel'),
@@ -15,10 +15,36 @@ var passport = require('passport'),
 var FCM = require('fcm-push'),
     fcm = new FCM(fcmServerKey);
 
+const axios = require('axios')
+const expressJwt = require('express-jwt')
+
 let op = require('../libs/operation')
 
-router.post('/', user.can('openAccount'), function(req, res) {
-    async.waterfall([function(next) {
+router.post('/', expressJwt({ secret: 'apps2017' }), user.can('openAccount'), (req, res) => {
+    console.log(req.body)
+    new Promise((res, rej) => {
+        Account.create({
+            name: req.body.username.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase()),
+            balance: 0,
+            role: req.user.role,
+            user: req.body.userId,
+            lineId: req.body.lineId ? req.body.lineId : null //why
+        }, (err, account) => {
+            if (err) rej('帳戶已存在')
+            else res(account)
+        })
+    }).then(account => axios({ //could boom
+        method: 'post',
+        url: ` https://ilab.csie.io/apps09/istore/user/account`,
+        headers: { Authorization: istoreJwt },
+        data: { userId: req.body.userId, accountId: account._id, storeId: storeId }
+    }).then(() => {
+        var roleToken = jwt.sign({ role: account.role }, storeSecret, { expiresIn: '300Y' });
+        res.header('Authorization', `Bearer ${roleToken}`);
+        res.json({ account });
+    })).catch((err) => res.json({ error: err }))
+
+    /*async.waterfall([function(next) {
         User.findById(req.body.userId, function(err, user) {
             if (err)
                 return res.json({ error: '帳號不存在' });
@@ -47,7 +73,42 @@ router.post('/', user.can('openAccount'), function(req, res) {
                 res.json({ account: account });
             }
         });
-    }]);
+    }]);*/
+});
+
+router.post('/login', expressJwt({ secret: 'apps2017' }), user.can('loginAccount'), (req, res) => {
+    let accountName = req.body.username.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase())
+    Account.findOne({ user: req.body.userId, name: accountName }, (err, account) => {
+        if (err || !account) return res.json({ error: '帳戶錯誤' });
+        else {
+            var roleToken = jwt.sign({ role: account ? account.role : 'customer' }, storeSecret, { expiresIn: '30m' });
+            res.header('Authorization', `Bearer ${roleToken}`);
+            return res.json({ loginUser: { _id: req.body.userId, username: req.body.username }, account });
+        }
+    });
+
+    /*console.log(req.body)
+    new Promise((res, rej) => {
+        Account.create({
+            name: req.body.username.toLowerCase().replace(/( |^)[a-z]/g, (L) => L.toUpperCase()),
+            balance: 0,
+            role: req.user.role,
+            user: req.body.userId,
+            lineId: req.body.lineId ? req.body.lineId : null //why
+        }, (err, account) => {
+            if (err) rej('帳戶已存在')
+            else res(account)
+        })
+    }).then(account => axios({ //could boom
+        method: 'post',
+        url: ` https://ilab.csie.io/apps09/istore/user/account`,
+        headers: { Authorization: istoreJwt },
+        data: { userId: req.body.userId, accountId: account._id, storeId: storeId }
+    }).then(() => {
+        var roleToken = jwt.sign({ role: account.role }, storeSecret, { expiresIn: '300Y' });
+        res.header('Authorization', `Bearer ${roleToken}`);
+        res.json({ account });
+    })).catch((err) => res.json({ error: err }))*/
 });
 
 router.put('/role', user.can('roleChange'), function(req, res) {
@@ -69,21 +130,6 @@ router.put('/deposit', user.can('deposit'), async(req, res) => {
         res.header('Authorization', `Bearer ${roleToken}`)
         res.json(result)
     }).catch((err) => res.json({ error: err }))
-
-    /*try {
-
-    } catch (error) {
-
-    }
-
-    let result = await op.deposit(req.body)
-    if (result.error)
-        res.json(result)
-    else {
-        var roleToken = jwt.sign({ role: req.user.role }, storeSecret, { expiresIn: '30m' })
-        res.header('Authorization', `Bearer ${roleToken}`)
-        res.json(result)
-    }*/
 });
 
 router.put('/buy', user.can('buy'), function(req, res) {
@@ -95,7 +141,7 @@ router.put('/buy', user.can('buy'), function(req, res) {
     }).catch((err) => res.json({ error: err }))
 });
 
-router.delete('/:storeId/:accountId', user.can('closeAccount'), function(req, res) {
+/*router.delete('/:storeId/:accountId', user.can('closeAccount'), function(req, res) {
     async.waterfall([function(next) {
         Transaction.remove({ account: req.params.accountId }, function(err, transaction) {
             if (err)
@@ -122,7 +168,7 @@ router.delete('/:storeId/:accountId', user.can('closeAccount'), function(req, re
             }
         });
     }])
-})
+})*/
 
 router.get('/', user.can('accounts'), function(req, res) {
     Account.find({}, function(err, accounts) {
@@ -131,7 +177,7 @@ router.get('/', user.can('accounts'), function(req, res) {
         else {
             var roleToken = jwt.sign({ role: req.user.role }, storeSecret, { expiresIn: '30m' });
             res.header('Authorization', `Bearer ${roleToken}`);
-            return res.json({ accounts: accounts });
+            return res.json({ accounts });
         }
     })
 });
@@ -164,7 +210,60 @@ router.get('/message/:accountId', user.can('messages'), function(req, res) {
         });
 });
 
-router.post('/message', user.can('sendMessage'), function(req, res) {
+router.post('/message', user.can('sendMessage'), (req, res) => {
+    //promise approach
+    new Promise((res, rej) => {
+        axios({
+                method: 'post',
+                url: ` https://ilab.csie.io/apps09/istore/pushmessage`,
+                headers: { Authorization: istoreJwt },
+                data: { title: req.body.title, content: req.body.content, storeId: storeId, accountIds: req.body.accountIds ? req.body.accountIds : null, storeTopic: storeTopic }
+            })
+            .then(res()) //could boom
+            .catch(rej('訊息發送錯誤'))
+    }).then(new Promise((res, rej) => {
+        Message.create({ title: req.body.title, content: req.body.content }, (err, message) => err ? rej('訊息儲存錯誤') : res(message._id))
+    })).then(msgId => {
+        let condition = (req.body.accountIds) ? { _id: { $in: req.body.accountIds } } : {}
+        Account.update(condition, { "$addToSet": { "messages": msgId } }, { multi: true }, (err, accounts) => err ? res.json({ error: '訊息儲存錯誤' }) : res.json({}))
+    }).catch(err => res.json({ error: err }))
+
+
+    //new
+    /*router.post('/message', user.can('sendMessage'), function(req, res) {
+        async.waterfall([function(next) {
+            axios({
+                method: 'post',
+                url: ` https://ilab.csie.io/apps09/istore/pushmessage`,
+                headers: { Authorization: istoreJwt },
+                data: { title: req.body.title, content: req.body.content, storeId: storeId, accountIds: req.body.accountIds ? req.body.accountIds : null, storeTopic: storeTopic }
+            }).then(function() {
+                next();
+            }).catch(function() {
+                return res.json({ error: '訊息發送錯誤' });
+            });
+        }, function(next) {
+            Message.create({ title: req.body.title, content: req.body.content }, function(err, message) {
+                if (err)
+                    return res.json({ error: '訊息儲存錯誤' });
+                else
+                    next(null, message._id);
+            });
+        }, function(messageId) {
+            var condition = (req.body.accountIds) ? { _id: { $in: req.body.accountIds } } : {}
+
+            Account.update(condition, { "$addToSet": { "messages": messageId } }, { multi: true }, function(err, accounts) {
+                if (err)
+                    return res.json({ error: '訊息儲存錯誤' });
+                else {
+                    return res.json({});
+                }
+            });
+        }]);
+    });
+
+
+
     async.waterfall([function(next) {
         if (req.body.accountIds) {
             User.find({ 'accounts': { $elemMatch: { storeId: req.body.storeId, accountId: { $in: req.body.accountIds } } } }, function(err, users) {
@@ -225,7 +324,50 @@ router.post('/message', user.can('sendMessage'), function(req, res) {
                 return res.json({ message: message });
             }
         });
-    }]);
+    }]);*/
 });
+
+router.delete('/:accountId', user.can('closeAccount'), (req, res) => {
+    new Promise((res, rej) => {
+        Transaction.remove({ account: req.params.accountId }, (err, transaction) => err ? rej('刪除交易明細錯誤') : res())
+    }).then(new Promise((res, rej) => {
+        Account.findByIdAndRemove(req.params.accountId, (err, account) => (err || account === null) ? rej('關閉帳戶錯誤') : res(account.user))
+    })).then(userId => axios({ //could boom
+        method: 'delete',
+        url: `https://ilab.csie.io/apps09/istore/user/account/${userId}/${storeId}`,
+        headers: { Authorization: istoreJwt }
+    }).then(() => {
+        res.header('Authorization', istoreJwt);
+        res.json({});
+    }).catch(() => res.json({ error: '關閉帳號錯誤' })))
+
+    /*async.waterfall([function(next) {
+        Transaction.remove({ account: req.params.accountId }, function(err, transaction) {
+            if (err)
+                return res.json({ error: '刪除交易明細錯誤' });
+            else
+                next();
+        })
+    }, function(next) {
+        Account.findByIdAndRemove(req.params.accountId, function(err, account) {
+            if (err || account === null)
+                return res.json({ error: '關閉帳戶錯誤' });
+            else
+                next(null, account.user);
+        })
+    }, function(userId) {
+        axios({
+            method: 'delete',
+            url: `https://ilab.csie.io/apps09/istore/user/account/${userId}/${storeId}`,
+            headers: { Authorization: istoreJwt }
+        }).then(function() {
+            res.header('Authorization', istoreJwt);
+            res.json({});
+        }).catch(function() {
+            return res.json({ error: '關閉帳號錯誤' });
+        });
+    }])*/
+})
+
 
 module.exports = router;

@@ -3,7 +3,7 @@ var { storeSecret } = require('../config/storeConfig').store,
     router = express.Router(),
     async = require('async'),
     axios = require('axios'),
-    User = require('../models/userModel'),
+    //User = require('../models/userModel'),
     Account = require('../models/accountModel'),
     Product = require('../models/productModel');
 
@@ -16,7 +16,7 @@ var Messages = LineBot.Messages;
 
 router.post('/product', user.can('linePushProducts'), function(req, res) { //這也可改
     async.waterfall([function(next) {
-        User.find({}).select('lineId').exec(function(err, users) {
+        User.find({}).select('lineId').exec(function(err, users) { //這裡要改,user已經不再我們這了
             if (err)
                 return res.json({ error: '帳號錯誤' });
             else {
@@ -68,7 +68,7 @@ router.post('/product', user.can('linePushProducts'), function(req, res) { //這
     }]);
 });
 
-router.post('/location', user.can('linePushLocation'), function(req, res) {
+router.post('/location', user.can('linePushLocation'), function(req, res) { //這裡要改,user已經不再我們這了
     async.waterfall([function(next) {
         User.find({}).select('lineId').exec(function(err, users) {
             if (err)

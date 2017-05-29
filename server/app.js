@@ -13,12 +13,12 @@ autoIncrement.initialize(connection);
 
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
-    User = require('./models/userModel'),
+    //User = require('./models/userModel'),
     expressJwt = require('express-jwt'),
     user = require('./helpers/accessControl');
 
-var userRouter = require('./routers/userRouter'),
-    accountRouter = require('./routers/accountRouter'),
+//var userRouter = require('./routers/userRouter'),
+var accountRouter = require('./routers/accountRouter'),
     productRouter = require('./routers/productRouter'),
     linePushRouter = require('./routers/lineRouter');
 
@@ -32,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({ exposedHeaders: 'Authorization' }));
 
 app.use(passport.initialize());
-passport.use(new LocalStrategy(User.authenticate()));
+//passport.use(new LocalStrategy(User.authenticate()));
 app.use(user.middleware());
 
 app.use(`${storePath}/public`, express.static(__dirname + '/public'));
@@ -41,16 +41,16 @@ app.use(`${storePath}/line`, linePushRouter);
 app.all('*', expressJwt({ secret: storeSecret })
     .unless({
         path: [
-            { url: `favico.ico` },
-            { url: `${storePath}/user/login` },
-            { url: `${storePath}/user`, methods: ['POST'] }
+            { url: `favico.ico` }, //這可不用
+            { url: `${storePath}/account/login` },
+            { url: `${storePath}/account`, methods: ['POST'] }
         ]
     }),
     function(req, res, next) {
         next();
     });
 
-app.use(`${storePath}/user`, userRouter);
+//app.use(`${storePath}/user`, () => console.log('BOOM!')); //!
 app.use(`${storePath}/account`, accountRouter);
 app.use(`${storePath}/product`, productRouter);
 //app.use(`${storePath}/line`, linePushRouter);

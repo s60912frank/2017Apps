@@ -41,14 +41,18 @@
                 </div>
             </div>
 
-            <div class="card">
+            <!--<div class="card">
                 <div class="item item-text-wrap">
                     <label class="item item-input item-select">
                         <div class="input-label">
                             商店：
                         </div>
                         <select>
-                            <option>{{userCtrl.account ? '商店展業中' : 'Store16'}}</option>
+                            <option ng-if="!userCtrl.accounts">Store16</option>  WAIT!
+                            <option ng-repeat="account in userCtrl.user.accounts">Store{{account.storeId}}</option>
+                        </select>
+                        <select ng-model="userCtrl.selectedStore" ng-change="userCtrl.setCurrentAccount()">
+                            <option ng-repeat="store in userCtrl.avaliableStore" value="{{storeId}}">Store{{storeId}}</option>
                         </select>
                     </label>
                     <div class="row">
@@ -59,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>-->
 
             <div class="card">
                 <div class="item item-text-wrap">
@@ -67,10 +71,22 @@
                         <div class="input-label">
                             商店：
                         </div>
-                        <select>
-                            <option>{{!userCtrl.account ? '尚無帳戶' : 'Store16'}}</option>
+                        <!--<select ng-model="userCtrl.currentAccount">
+                            <option ng-if="!userCtrl.account">尚無帳戶</option>
+                            <option ng-if="userCtrl.account" ng-repeat="account in userCtrl.account">Store{{account.storeId}}</option>
+                        </select>-->
+                        <select ng-model="userCtrl.currentStore" ng-change="userCtrl.setCurrentStore()">
+                            <option ng-repeat="storeId in userCtrl.avaliableStore" value="{{storeId}}">Store{{storeId}}</option>
                         </select>
                     </label>
+                    <div ng-if="!userCtrl.account">
+                        <div class="row">
+                            <div class="col col-100" ng-if="!userCtrl.account">
+                                <button class="button button-block button-dark" ng-click="userCtrl.openAccount()">開戶</button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div ng-if="userCtrl.account">
                         <br />
                         <h2 align="center">帳戶： {{userCtrl.account.name}}</h2>

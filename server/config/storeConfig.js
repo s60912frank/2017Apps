@@ -1,6 +1,6 @@
 var storeId = '16';
 //const lineHost = 'https://ilab.csie.io'
-const lineHost = 'https://76533190.ngrok.io'
+const lineHost = 'https://2bc454ef.ngrok.io'
 
 module.exports = {
     istore: {

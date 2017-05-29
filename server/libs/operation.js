@@ -1,5 +1,5 @@
 var { storeId } = require('../config/storeConfig').store, { fcmServerKey } = require('../config/storeConfig').istore,
-    User = require('../models/userModel'),
+    //User = require('../models/userModel'),
     Account = require('../models/accountModel'),
     Transaction = require('../models/transactionModel'),
     Product = require('../models/productModel');
@@ -7,7 +7,7 @@ var { storeId } = require('../config/storeConfig').store, { fcmServerKey } = req
 let getAccount = (data) => {
     return new Promise((res, rej) => {
         if (data.lineId) {
-            User.findOne({ lineId: data.lineId, accounts: { $elemMatch: { storeId } } }, (err, user) => {
+            User.findOne({ lineId: data.lineId, accounts: { $elemMatch: { storeId } } }, (err, user) => { //這裡要改,user已經不再我們這了
                 if (err) rej('帳號錯誤')
                 else res(user.accounts[0].accountId)
             })

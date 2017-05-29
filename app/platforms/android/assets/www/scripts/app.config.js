@@ -1,4 +1,4 @@
-﻿angular.module('2017Apps').config(['$ionicConfigProvider', '$httpProvider', '$stateProvider', '$urlRouterProvider', function ($ionicConfigProvider, $httpProvider, $stateProvider, $urlRouterProvider) {
+﻿angular.module('2017Apps').config(['$ionicConfigProvider', '$httpProvider', '$stateProvider', '$urlRouterProvider', function($ionicConfigProvider, $httpProvider, $stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/tab/user');
     $stateProvider
         .state('tab', {

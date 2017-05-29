@@ -6,81 +6,32 @@ var user = new ConnectRoles({
     }
 });
 
-user.use('roleChange', function (req) {
-    if (req.user && (req.user.role === 'manager' || req.user.role === 'customer')) {
-        return true;
-    }
-});
+user.use('roleChange', req => (req.user && (req.user.role == 'manager' || req.user.role == 'customer')))
 
-user.use('openAccount', function (req) {
-    if (req.user && req.user.role === 'customer') {
-        return true;
-    }
-});
-user.use('closeAccount', function (req) {
-    if (req.user && req.user.role === 'customer') {
-        return true;
-    }
-});
+user.use('openAccount', req => (req.user && req.user.role == 'customer'))
 
-user.use('buy', function (req) {
-    if (req.user && req.user.role === 'customer' || req.user.role === 'line') {
-        return true;
-    }
-});
+user.use('loginAccount', req => (req.user && req.user.role == 'customer'))
 
-user.use('deposit', function (req) {
-    if (req.user && req.user.role === 'customer' || req.user.role === 'line') {
-        return true;
-    }
-});
+user.use('closeAccount', req => (req.user && req.user.role == 'customer'))
 
-user.use('transactions', function (req) {
-    if (req.user && (req.user.role === 'manager' || req.user.role === 'customer')) {
-        return true;
-    }
-});
+user.use('buy', req => (req.user && req.user.role === 'customer' || req.user.role === 'line'))
 
-user.use('accounts', function (req) {
-    if (req.user && req.user.role === 'manager') {
-        return true;
-    }
-});
+user.use('deposit', req => (req.user && req.user.role === 'customer' || req.user.role === 'line'))
 
-user.use('sendMessage', function (req) {
-    if (req.user && req.user.role === 'manager') {
-        return true;
-    }
-});
+user.use('transactions', req => (req.user && (req.user.role === 'manager' || req.user.role === 'customer')))
 
-user.use('messages', function (req) {
-    if (req.user && (req.user.role === 'manager' || req.user.role === 'customer')) {
-        return true;
-    }
-});
+user.use('accounts', req => (req.user && req.user.role === 'manager'))
 
-user.use('product', function (req) {
-    if (req.user && (req.user.role === 'manager')) {
-        return true;
-    }
-});
+user.use('sendMessage', req => (req.user && req.user.role === 'manager'))
 
-user.use('products', function (req) {
-    if (req.user && (req.user.role === 'manager' || req.user.role === 'customer' || req.user.role === 'line')) {
-        return true;
-    }
-});
+user.use('messages', req => (req.user && (req.user.role === 'manager' || req.user.role === 'customer')))
 
-user.use('linePushProducts', function (req) {
-    if (req.user && req.user.role === 'manager') {
-        return true;
-    }
-});
+user.use('product', req => (req.user && (req.user.role === 'manager')))
 
-user.use('linePushLocation', function (req) {
-    if (req.user && req.user.role === 'manager') {
-        return true;
-    }
-});
+user.use('products', req => (req.user && (req.user.role === 'manager' || req.user.role === 'customer' || req.user.role === 'line')))
+
+user.use('linePushProducts', req => (req.user && req.user.role === 'manager'))
+
+user.use('linePushLocation', req => (req.user && req.user.role === 'manager'))
 
 module.exports = user;
