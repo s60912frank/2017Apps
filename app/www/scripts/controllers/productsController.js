@@ -15,6 +15,8 @@
     });
 
     var init = function() {
+        self.picSource = '2'
+        self.product.imgType = 'URL';
         self.account = $rootScope.account;
         ProductService.getProducts(function(data) {
             if (data.error)
@@ -27,9 +29,11 @@
     init();
 
     self.createProduct = function() {
-        if (self.product.name === '' || self.product.price === '' || self.product.url === '')
+        if (self.product.name == '' || self.product.price == '' || self.product.imgType == '')
             AlertService.alertPopup('錯誤！', '請輸入商品資訊');
         else {
+            //delete self.product.url
+            //self.product.url = encodeURI(self.product.url)
             ProductService.createProduct(self.product, function(data) {
                 if (data.error)
                     AlertService.alertPopup('錯誤！', data.error);
@@ -38,6 +42,7 @@
                     self.product.name = '';
                     self.product.price = '';
                     self.product.url = '';
+                    self.product.imgType = '';
                     init();
                 }
             });
@@ -66,6 +71,8 @@
         self.product.name = '';
         self.product.price = '';
         self.product.url = '';
+        self.picSource = '2'
+        self.product.imgType = '';
     };
 
     self.gotoOperation = function() {
@@ -87,4 +94,35 @@
                     AlertService.alertPopup('商品推播', '推播成功');
             });
     };
+
+    self.setPicSource = () => {
+        let option = parseInt(self.picSource)
+        switch (option) {
+            case 0:
+            case 1:
+                self.selectProductPic(self.picSource)
+                self.product.imgType = 'dataURL'
+                break;
+            case 2:
+                self.product.imgType = 'URL'
+                break;
+            case 3:
+                self.product.imgType = 'nopic'
+                break;
+            default:
+                AlertService.alertPopup('錯誤!', self.picSource)
+                break;
+        }
+    }
+
+    self.selectProductPic = (sourceType) => {
+        navigator.camera.getPicture((data) => {
+            self.product.url = data
+            AlertService.alertPopup('照片', '選擇成功')
+        }, (msg) => AlertService.alertPopup('錯誤!', msg), {
+            quality: 70,
+            destinationType: Camera.DestinationType.DATA_URL,
+            sourceType: sourceType
+        })
+    }
 }]);

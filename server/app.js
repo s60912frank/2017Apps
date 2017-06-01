@@ -11,13 +11,9 @@ var mongoose = require('mongoose'),
 mongoose.Promise = global.Promise;
 autoIncrement.initialize(connection);
 
-//passport = require('passport'),
-// LocalStrategy = require('passport-local').Strategy,
-//User = require('./models/userModel'),
 var expressJwt = require('express-jwt'),
     user = require('./helpers/accessControl');
 
-//var userRouter = require('./routers/userRouter'),
 var accountRouter = require('./routers/accountRouter'),
     productRouter = require('./routers/productRouter'),
     linePushRouter = require('./routers/lineRouter');
@@ -27,8 +23,8 @@ require('./libs/lineRobot');
 var app = express();
 
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({ limit: '5mb' }));
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
 app.use(cors({ exposedHeaders: 'Authorization' }));
 
 //app.use(passport.initialize());
@@ -43,7 +39,8 @@ app.all('*', expressJwt({ secret: storeSecret })
             //{ url: '/favico.ico' }, //這可不用
             { url: `${storePath}/account/login` },
             { url: `${storePath}/account`, methods: ['POST'] },
-            { url: `${storePath}/line/webhook`, methods: ['POST'] }
+            { url: `${storePath}/line/webhook`, methods: ['POST'] },
+            //{ url: `${storePath}/public`, methods: ['GET'] }
         ]
     }), (req, res, next) => next());
 

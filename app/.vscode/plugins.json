@@ -1,1 +1,1 @@
-{"plugins":["cordova-plugin-whitelist","cordova-plugin-fcm"]}
+{"plugins":["cordova-plugin-whitelist","cordova-plugin-fcm","cordova-plugin-camera","cordova-plugin-compat"]}

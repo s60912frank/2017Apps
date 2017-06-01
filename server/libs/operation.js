@@ -1,23 +1,22 @@
 var { storeId } = require('../config/storeConfig').store, { fcmServerKey } = require('../config/storeConfig').istore,
-    //User = require('../models/userModel'),
     Account = require('../models/accountModel'),
     Transaction = require('../models/transactionModel'),
     Product = require('../models/productModel');
 
 let getAccount = (data) => {
-    return (new Promise((res, rej) => {
+    return new Promise((res, rej) => {
         if (data.lineId) {
             Account.findOne({ lineId: data.lineId }, (err, account) => {
-                if (err) rej('帳戶錯誤')
+                if (err || !account) rej('帳戶錯誤')
                 else res(account)
             })
         } else {
             Account.findOne({ _id: data.accountId }, (err, account) => {
-                if (err) rej('帳戶錯誤')
+                if (err || !account) rej('帳戶錯誤')
                 else res(account)
             })
         }
-    }))
+    })
 }
 
 module.exports = {
@@ -33,11 +32,13 @@ module.exports = {
             if (data.lineId && account.isDepositing) {
                 account.isDepositing = false
                 account.save(err => err ? rej(err) : res(account))
-            } else {
+            } else if (data.lineId && !account.isDepositing) {
                 //not work
                 //rej('若想儲值請點選下方選單!')
                 //work
                 setTimeout(() => rej('若想儲值請點選下方選單!'), 0);
+            } else {
+                res(account)
             }
         })).then(account => new Promise((res, rej) => {
             account.balance += parseInt(data.amount);

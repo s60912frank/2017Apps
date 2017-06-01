@@ -1,3 +1,5 @@
+var { clientSecret, albumID } = require('../config/storeConfig').imgur
+var { linePicUrl } = require('../config/storeConfig').url
 var { storeSecret } = require('../config/storeConfig').store,
     express = require('express'),
     router = express.Router(),
@@ -7,14 +9,32 @@ var { storeSecret } = require('../config/storeConfig').store,
     Product = require('../models/productModel');
 
 var user = require('../helpers/accessControl');
+const axios = require('axios');
+//const rp = require('request-promise');
+const fs = require('fs')
 
 router.post('/', user.can('product'), function(req, res) {
-    Product.create({ name: req.body.name, price: req.body.price, imageUrl: req.body.url }, function(err, product) {
-        if (err)
-            return res.json({ error: '上架錯誤' });
-        else
-            return res.json({});
-    });
+    console.log(req.body.url.length)
+    new Promise((resolve, rej) => {
+            console.log('TYPE: ' + req.body.imgType)
+            if (req.body.imgType == 'dataURL') {
+                let filename = Date.now()
+                fs.writeFile(`../public/picture/${filename}.jpg`, req.body.url, 'base64', err => err ? rej(err) : resolve(`${linePicUrl}${filename}.jpg`))
+            } else if (req.body.imgType == 'URL') {
+                resolve(req.body.url)
+            } else if (req.body.imgType == 'nopic') {
+                resolve(`${linePicUrl}nopic.jpg`)
+            } else rej('網址格式錯誤')
+        }).then(url => new Promise((resolve, rej) => {
+            Product.create({ name: req.body.name, price: req.body.price, imageUrl: url }, (err, product) => {
+                if (err) rej('上架錯誤')
+                else resolve()
+            });
+        })).then(() => res.json({}))
+        .catch(err => {
+            console.error(err.message)
+            res.json({ error: (err.message ? err.message : err) })
+        })
 });
 
 router.get('/', user.can('products'), function(req, res) {

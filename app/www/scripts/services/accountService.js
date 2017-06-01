@@ -59,7 +59,7 @@
     };
 
     self.closeAccount = function(stroeId, accountId, onSuccess) {
-        $http.delete($rootScope.iStoreUrl() + '/account/' + stroeId + '/' + accountId).
+        $http.delete($rootScope.iStoreUrl() + '/account/' + accountId).
         success(function(data, status, headers, config) {
             (onSuccess || angular.noop)(data);
         }).

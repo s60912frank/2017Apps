@@ -13,14 +13,28 @@
                 <span class="input-label">商品價格：</span>
                 <input type="number" ng-model="productsCtrl.product.price">
             </label>
-            <label class="item item-input">
+            <label class="item item-select">
                 <span class="input-label">商品圖片：</span>
+                <select ng-model="productsCtrl.picSource" ng-change="productsCtrl.setPicSource()">
+                    <option value=2>輸入網址</option>
+                    <option value=1>拍攝照片</option>
+                    <option value=0>選擇圖片</option>
+                    <option value=3>無圖片</option>
+                </select>
+            </label>
+            <label class="item item-input" ng-if="productsCtrl.picSource === '2'">
+                <span class="input-label">商品網址：</span>
                 <input type="text" ng-model="productsCtrl.product.url">
             </label>
         </div>
         <div class="row">
             <div class="col">
                 <button class="button button-block button-dark" ng-click="productsCtrl.createProduct()">上架</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <img ng-src="data:image/jpeg;base64,{{productsCtrl.product.url}}" style="max-width:100%">
             </div>
         </div>
     </ion-content>

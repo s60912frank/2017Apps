@@ -2,7 +2,7 @@
     $rootScope.storeId = '16';
     $rootScope.iStoreSSOURL = 'https://ilab.csie.io/apps09/istore'
         //$rootScope.iStoreUrl = () => 'https://2bc454ef.ngrok.io/apps' + $rootScope.storeId + '/istore';
-    $rootScope.iStoreUrl = () => 'https://2bc454ef.ngrok.io/apps' + $rootScope.storeId + '/istore';
+    $rootScope.iStoreUrl = () => 'https://43c00dbc.ngrok.io/apps' + $rootScope.storeId + '/istore';
     //$rootScope.iStoreUrl = () => 'https://ilab.csie.io/apps' + $rootScope.storeId + '/istore';
     //$rootScope.iStoreUrl = () => 'https://ilab.csie.io/apps' + $rootScope.storeId + '/store';
     $rootScope.storeTopic = () => 'store' + $rootScope.storeId;
