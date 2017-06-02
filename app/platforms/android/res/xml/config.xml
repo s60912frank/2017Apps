@@ -11,9 +11,9 @@
         <param name="android-package" value="org.apache.cordova.whitelist.WhitelistPlugin" />
         <param name="onload" value="true" />
     </feature>
-    <name>16_hw10</name>
+    <name>16_final</name>
     <description>
-        A not that useful app.
+        A little bit useful app.
     </description>
     <author email="s60912frank@gmail.com" href="https://gmin.cf">
         Gmin

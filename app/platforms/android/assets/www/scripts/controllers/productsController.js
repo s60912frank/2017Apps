@@ -6,6 +6,7 @@
         url: ''
     };
     self.productIds = [];
+    self.nowStore = $rootScope.storeId
 
     $ionicModal.fromTemplateUrl('views/createProduct.html', {
         scope: $scope,
@@ -29,11 +30,11 @@
     init();
 
     self.createProduct = function() {
-        if (self.product.name == '' || self.product.price == '' || self.product.imgType == '')
+        if (self.product.name == '' || self.product.price == '' || (self.product.imgType != 'nopic' && self.product.url == ''))
             AlertService.alertPopup('錯誤！', '請輸入商品資訊');
-        else {
-            //delete self.product.url
-            //self.product.url = encodeURI(self.product.url)
+        else if (self.product.imgType == 'URL' && self.product.url.indexOf('https') == -1) {
+            AlertService.alertPopup('錯誤！', '請使用包含https的網址');
+        } else {
             ProductService.createProduct(self.product, function(data) {
                 if (data.error)
                     AlertService.alertPopup('錯誤！', data.error);
@@ -120,9 +121,11 @@
             self.product.url = data
             AlertService.alertPopup('照片', '選擇成功')
         }, (msg) => AlertService.alertPopup('錯誤!', msg), {
-            quality: 50,
+            quality: 70,
             destinationType: Camera.DestinationType.DATA_URL,
-            sourceType: sourceType
+            sourceType: sourceType,
+            targetWidth: 1920,
+            targetHeight: 1920
         })
     }
 }]);

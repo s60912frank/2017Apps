@@ -41,46 +41,15 @@
                 </div>
             </div>
 
-            <!--<div class="card">
-                <div class="item item-text-wrap">
-                    <label class="item item-input item-select">
-                        <div class="input-label">
-                            商店：
-                        </div>
-                        <select>
-                            <option ng-if="!userCtrl.accounts">Store16</option>  WAIT!
-                            <option ng-repeat="account in userCtrl.user.accounts">Store{{account.storeId}}</option>
-                        </select>
-                        <select ng-model="userCtrl.selectedStore" ng-change="userCtrl.setCurrentAccount()">
-                            <option ng-repeat="store in userCtrl.avaliableStore" value="{{storeId}}">Store{{storeId}}</option>
-                        </select>
-                    </label>
-                    <div class="row">
-                        <div class="col col-100" ng-if="!userCtrl.account">
-                            <button class="button button-block button-dark" ng-click="userCtrl.openAccount()">
-                                開戶
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>-->
-
             <div class="card">
                 <div class="item item-text-wrap">
                     <label class="item item-input item-select">
                         <div class="input-label">
                             商店：
                         </div>
-                        <!--<select ng-model="userCtrl.currentAccount">
-                            <option ng-if="!userCtrl.account">尚無帳戶</option>
-                            <option ng-if="userCtrl.account" ng-repeat="account in userCtrl.account">Store{{account.storeId}}</option>
-                        </select>-->
                         <select ng-model="userCtrl.account" ng-change="userCtrl.setCurrentStore()">
-                            <option ng-repeat="account in userCtrl.loginUser.accounts" value="{{account}}" ng-if="!account.accountId">
-                                Store{{account.storeId}} 尚未註冊
-                            </option>
-                            <option ng-repeat="account in userCtrl.loginUser.accounts" value="{{account}}" ng-if="account.accountId">
-                                Store{{account.storeId}}
+                            <option ng-repeat="(sid, acc) in userCtrl.loginUser.accounts" value="{{sid}}">
+                                Store{{acc.storeId}}{{(acc.accountId) ? '' : '尚未開戶'}}
                             </option>
                         </select>
                     </label>

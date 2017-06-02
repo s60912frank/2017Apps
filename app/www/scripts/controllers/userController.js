@@ -8,7 +8,6 @@
         self.loginUser.accounts: 填充過的accounts list
         self.account: 目前list中的account
         */
-
     var init = function() {
         if (typeof $rootScope.user === 'undefined') {
             self.isLoggedIn = false;
@@ -18,25 +17,16 @@
                 deviceToken: ''
             };
         } else {
-            /*$rootScope.user = user
-            $rootScope.account = self.loginAccount*/
-
             self.isLoggedIn = true;
             self.user = $rootScope.user;
-            //self.accounts = ($rootScope.user.accounts && $rootScope.user.accounts.length > 0) ? $rootScope.user.accounts : null;
             self.loginUser = $rootScope.loginUser
-                //self.account = ($rootScope.account) ? $rootScope.account : null;
-                //$rootScope.account = self.account
             self.mode = ($rootScope.role === 'manager') ? true : false;
             self.loginAccount = ($rootScope.account) ? $rootScope.account : null;
-            self.account = $rootScope.selectedAccount
-            AlertService.alertPopup('YO', JSON.stringify(self.loginAccount))
-                //self.currentStore = $rootScope.storeId
+            self.account = $rootScope.storeId
         }
     };
 
     init();
-    //self.setCurrentStore()
 
     self.login = function() {
         if (!self.user.username || !self.user.password) {
@@ -48,21 +38,24 @@
                     if (data.error)
                         AlertService.alertPopup('錯誤!', data.error);
                     else {
-                        //填充user(????)
-                        self.loginUser = data.loginUser;
+                        let accountsList = {}
                         for (let i = 0; i < self.avaliableStore.length; i++) {
                             let found = false
-                            for (let j = 0; j < self.loginUser.accounts.length; j++) {
-                                if (self.loginUser.accounts[j].storeId == self.avaliableStore[i]) {
+                            for (let j = 0; j < data.loginUser.accounts.length; j++) {
+                                if (data.loginUser.accounts[j].storeId == self.avaliableStore[i]) {
                                     found = true
+                                    accountsList[self.avaliableStore[i]] = data.loginUser.accounts[j]
                                     break
                                 }
                             }
-                            if (!found) self.loginUser.accounts.push({ storeId: self.avaliableStore[i] })
+                            if (!found) accountsList[self.avaliableStore[i]] = { storeId: self.avaliableStore[i] }
                         }
+                        data.loginUser.accounts = accountsList
+                        self.loginUser = data.loginUser;
                         $rootScope.loginUser = self.loginUser
                         $rootScope.user = self.user
-                        init();
+                        self.account = '16'
+                        self.setCurrentStore()
                     }
                 });
             });
@@ -70,14 +63,10 @@
     };
 
     self.setCurrentStore = () => {
-        let account = JSON.parse(self.account)
+        let account = self.loginUser.accounts[self.account]
         $rootScope.storeId = account.storeId
-        $rootScope.selectedAccount = self.account
-            //AlertService.alertPopup('ISTORE', $rootScope.iStoreUrl())
         if (account.accountId) {
             $rootScope.account = {}
-                //$rootScope.account.id = account.accountId
-                //$rootScope.storeId = account.storeId
             AccountService.loginAccount({ accountId: account.accountId }, (data) => {
                 if (data.error) {
                     AlertService.alertPopup('錯誤!', data.error);
@@ -121,10 +110,7 @@
     };
 
     self.openAccount = function() {
-        let account = JSON.parse(self.account)
-        $rootScope.storeId = account.storeId
-            //$rootScope.storeId = self.currentStore
-            //AlertService.alertPopup('INFO!', $rootScope.iStoreUrl());
+        $rootScope.storeId = self.account
         AccountService.openAccount({ userId: self.loginUser._id, username: self.loginUser.username }, function(data) {
             if (data.error)
                 AlertService.alertPopup('錯誤!', data.error);
@@ -132,14 +118,7 @@
                 FCMPlugin.subscribeToTopic($rootScope.storeTopic());
                 $rootScope.account = data.account;
                 $rootScope.role = data.account.role;
-                $rootScope.loginUser.accounts = $rootScope.loginUser.accounts.filter(ele => {
-                    if (ele.storeId == account.storeId) {
-                        ele.accountId = data.account._id
-                        AlertService.alertPopup('ACCOUNT', JSON.stringify(data.account))
-                        $rootScope.selectedAccount = JSON.stringify(ele)
-                    }
-                    return ele
-                })
+                $rootScope.loginUser.accounts[$rootScope.storeId].accountId = data.account._id
                 init();
             }
         });
@@ -153,10 +132,7 @@
                 FCMPlugin.unsubscribeFromTopic($rootScope.storeTopic());
                 delete $rootScope.account;
                 delete $rootScope.role;
-                $rootScope.loginUser.accounts = $rootScope.loginUser.accounts.filter(ele => {
-                    if (ele.storeId == $rootScope.storeId) delete ele.accountId
-                    return ele
-                })
+                delete $rootScope.loginUser.accounts[$rootScope.storeId].accountId
                 init();
             }
         })
