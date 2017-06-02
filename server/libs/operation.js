@@ -33,9 +33,6 @@ module.exports = {
                 account.isDepositing = false
                 account.save(err => err ? rej(err) : res(account))
             } else if (data.lineId && !account.isDepositing) {
-                //not work
-                //rej('若想儲值請點選下方選單!')
-                //work
                 setTimeout(() => rej('若想儲值請點選下方選單!'), 0);
             } else {
                 res(account)

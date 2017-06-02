@@ -1,6 +1,5 @@
 var { storeSecret } = require('../config/storeConfig').store,
-    express = require('express'),
-    router = express.Router(),
+    router = require('express').Router(),
     axios = require('axios'),
     Account = require('../models/accountModel'),
     Product = require('../models/productModel');
@@ -8,12 +7,11 @@ var { storeSecret } = require('../config/storeConfig').store,
 var jwt = require('jsonwebtoken'),
     user = require('../helpers/accessControl');
 
-var LineBot = require('node-line-messaging-api');
 let lineBot = require('../helpers/lineBot').client
 
-var Messages = LineBot.Messages;
+var Messages = require('../helpers/lineBot').Messages;
 
-router.post('/product', user.can('linePushProducts'), function(req, res) { //這也可改
+router.post('/product', user.can('linePushProducts'), function(req, res) {
     //promise Approach
     new Promise((res, rej) => {
         Account.find({}).select('lineId').exec(function(err, users) {
@@ -58,8 +56,10 @@ router.post('/product', user.can('linePushProducts'), function(req, res) { //這
                 var roleToken = jwt.sign({ role: req.user.role }, storeSecret, { expiresIn: '30m' });
                 res.header('Authorization', `Bearer ${roleToken}`);
                 return res.json({});
-            }).catch(err => { rej('推播錯誤');
-                console.error(err); })
+            }).catch(err => {
+                rej('推播錯誤');
+                console.error(err);
+            })
     })).catch(err => res.json({ error: err }))
 });
 

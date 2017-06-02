@@ -1,4 +1,4 @@
-const lineBot = require('@line/bot-sdk')
+const lineBot = require('../extra_modules/bot-sdk')
 const config = {
     channelAccessToken: require('../config/storeConfig').line.channelAccessToken,
     channelSecret: lineSecret = require('../config/storeConfig').line.channelSecret
@@ -6,5 +6,6 @@ const config = {
 
 module.exports = {
     middleware: lineBot.middleware(config),
-    client: new lineBot.Client(config)
+    client: new lineBot.Client(config),
+    Messages: lineBot.messages
 }

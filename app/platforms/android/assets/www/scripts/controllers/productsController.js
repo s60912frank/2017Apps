@@ -120,7 +120,7 @@
             self.product.url = data
             AlertService.alertPopup('照片', '選擇成功')
         }, (msg) => AlertService.alertPopup('錯誤!', msg), {
-            quality: 70,
+            quality: 50,
             destinationType: Camera.DestinationType.DATA_URL,
             sourceType: sourceType
         })

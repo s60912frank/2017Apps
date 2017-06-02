@@ -1,7 +1,5 @@
 var { storeId, storeSecret, storeTopic, istoreJwt } = require('../config/storeConfig').store, { fcmServerKey } = require('../config/storeConfig').istore,
-    express = require('express'),
-    router = express.Router(),
-    async = require('async'),
+    router = require('express').Router(),
     Account = require('../models/accountModel'),
     Message = require('../models/messageModel'),
     Transaction = require('../models/transactionModel'),

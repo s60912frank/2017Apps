@@ -1,16 +1,11 @@
-var { clientSecret, albumID } = require('../config/storeConfig').imgur
 var { linePicUrl } = require('../config/storeConfig').url
 var { storeSecret } = require('../config/storeConfig').store,
-    express = require('express'),
-    router = express.Router(),
-    async = require('async'),
-    //User = require('../models/userModel'),
+    router = require('express').Router(),
     Account = require('../models/accountModel'),
     Product = require('../models/productModel');
 
 var user = require('../helpers/accessControl');
 const axios = require('axios');
-//const rp = require('request-promise');
 const fs = require('fs')
 
 router.post('/', user.can('product'), function(req, res) {
@@ -18,8 +13,8 @@ router.post('/', user.can('product'), function(req, res) {
     new Promise((resolve, rej) => {
             console.log('TYPE: ' + req.body.imgType)
             if (req.body.imgType == 'dataURL') {
-                let filename = Date.now()
-                fs.writeFile(`../public/picture/${filename}.jpg`, req.body.url, 'base64', err => err ? rej(err) : resolve(`${linePicUrl}${filename}.jpg`))
+                let filename = `pic${Date.now()}`
+                fs.writeFile(`${__dirname}/../public/picture/${filename}.jpg`, req.body.url, 'base64', err => err ? rej(err) : resolve(`${linePicUrl}${filename}.jpg`))
             } else if (req.body.imgType == 'URL') {
                 resolve(req.body.url)
             } else if (req.body.imgType == 'nopic') {

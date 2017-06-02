@@ -23,12 +23,10 @@ require('./libs/lineRobot');
 var app = express();
 
 app.use(logger('dev'));
-app.use(bodyParser.json({ limit: '5mb' }));
-app.use(bodyParser.urlencoded({ limit: '5mb', extended: true }));
+app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors({ exposedHeaders: 'Authorization' }));
 
-//app.use(passport.initialize());
-//passport.use(new LocalStrategy(User.authenticate()));
 app.use(user.middleware());
 
 app.use(`${storePath}/public`, express.static(__dirname + '/public'));
@@ -36,22 +34,17 @@ app.use(`${storePath}/public`, express.static(__dirname + '/public'));
 app.all('*', expressJwt({ secret: storeSecret })
     .unless({
         path: [
-            //{ url: '/favico.ico' }, //這可不用
             { url: `${storePath}/account/login` },
             { url: `${storePath}/account`, methods: ['POST'] },
-            { url: `${storePath}/line/webhook`, methods: ['POST'] },
-            //{ url: `${storePath}/public`, methods: ['GET'] }
+            { url: `${storePath}/line/webhook`, methods: ['POST'] }
         ]
     }), (req, res, next) => next());
 
-//app.use(`${storePath}/user`, () => console.log('BOOM!')); //!
 app.use(`${storePath}/account`, accountRouter);
 app.use(`${storePath}/product`, productRouter);
 app.use(`${storePath}/line`, linePushRouter);
-//app.use(`${storePath}/line`, linePushRouter);
 
-
-/*app.use(function(req, res, next) {
+app.use(function(req, res, next) {
     var err = new Error('Not Found');
     err.status = 404;
     next(err);
@@ -60,6 +53,6 @@ app.use(`${storePath}/line`, linePushRouter);
 app.use(function(err, req, res, next) {
     res.status(err.status || 500);
     res.json({ error: 'Service Not Found' });
-});*/
+});
 
 module.exports = app;
