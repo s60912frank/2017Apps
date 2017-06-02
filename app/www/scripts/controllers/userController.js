@@ -18,13 +18,20 @@
                 deviceToken: ''
             };
         } else {
+            /*$rootScope.user = user
+            $rootScope.account = self.loginAccount*/
+
             self.isLoggedIn = true;
             self.user = $rootScope.user;
-            self.accounts = ($rootScope.user.accounts && $rootScope.user.accounts.length > 0) ? $rootScope.user.accounts : null;
-            //self.account = ($rootScope.account) ? $rootScope.account : null;
-            //$rootScope.account = self.account
+            //self.accounts = ($rootScope.user.accounts && $rootScope.user.accounts.length > 0) ? $rootScope.user.accounts : null;
+            self.loginUser = $rootScope.loginUser
+                //self.account = ($rootScope.account) ? $rootScope.account : null;
+                //$rootScope.account = self.account
             self.mode = ($rootScope.role === 'manager') ? true : false;
-            self.currentStore = $rootScope.storeId
+            self.loginAccount = ($rootScope.account) ? $rootScope.account : null;
+            self.account = $rootScope.selectedAccount
+            AlertService.alertPopup('YO', JSON.stringify(self.loginAccount))
+                //self.currentStore = $rootScope.storeId
         }
     };
 
@@ -42,18 +49,19 @@
                         AlertService.alertPopup('錯誤!', data.error);
                     else {
                         //填充user(????)
-                        $rootScope.user = data.loginUser;
+                        self.loginUser = data.loginUser;
                         for (let i = 0; i < self.avaliableStore.length; i++) {
                             let found = false
-                            for (let j = 0; j < $rootScope.user.accounts.length; j++) {
-                                if ($rootScope.user.accounts[j].storeId == self.avaliableStore[i]) {
+                            for (let j = 0; j < self.loginUser.accounts.length; j++) {
+                                if (self.loginUser.accounts[j].storeId == self.avaliableStore[i]) {
                                     found = true
                                     break
                                 }
                             }
-                            if (!found) $rootScope.user.accounts.push({ storeId: self.avaliableStore[i] })
+                            if (!found) self.loginUser.accounts.push({ storeId: self.avaliableStore[i] })
                         }
-                        AlertService.alertPopup("INFO", JSON.stringify($rootScope.user.accounts))
+                        $rootScope.loginUser = self.loginUser
+                        $rootScope.user = self.user
                         init();
                     }
                 });
@@ -64,11 +72,12 @@
     self.setCurrentStore = () => {
         let account = JSON.parse(self.account)
         $rootScope.storeId = account.storeId
-        AlertService.alertPopup('ISTORE', $rootScope.iStoreUrl())
+        $rootScope.selectedAccount = self.account
+            //AlertService.alertPopup('ISTORE', $rootScope.iStoreUrl())
         if (account.accountId) {
             $rootScope.account = {}
-            $rootScope.account.id = account.accountId
-            $rootScope.storeId = account.storeId
+                //$rootScope.account.id = account.accountId
+                //$rootScope.storeId = account.storeId
             AccountService.loginAccount({ accountId: account.accountId }, (data) => {
                 if (data.error) {
                     AlertService.alertPopup('錯誤!', data.error);
@@ -84,34 +93,6 @@
             delete $rootScope.role
             init()
         }
-
-        /*let found = -1
-        for (let i = 0; i < self.user.accounts.length; i++) {
-            if (self.user.accounts[i].storeId == self.currentStore) {
-                found = i
-                break
-            }
-        }
-        if (found > -1) {
-            let account = self.user.accounts[found]
-            $rootScope.account = {}
-            $rootScope.account.id = account.accountId
-            $rootScope.storeId = account.storeId
-            AccountService.loginAccount({ accountId: account.accountId }, (data) => {
-                if (data.error) {
-                    AlertService.alertPopup('錯誤!', data.error);
-                } else {
-                    FCMPlugin.subscribeToTopic($rootScope.storeTopic());
-                    $rootScope.account = data.account;
-                    $rootScope.role = data.account.role;
-                    init()
-                }
-            })
-        } else {
-            delete $rootScope.account
-            delete $rootScope.role
-            init()
-        }*/
     }
 
     self.register = function() {
@@ -140,35 +121,49 @@
     };
 
     self.openAccount = function() {
-        $rootScope.storeId = self.currentStore
+        let account = JSON.parse(self.account)
+        $rootScope.storeId = account.storeId
+            //$rootScope.storeId = self.currentStore
             //AlertService.alertPopup('INFO!', $rootScope.iStoreUrl());
-        AccountService.openAccount({ userId: self.user._id, username: self.user.username }, function(data) {
+        AccountService.openAccount({ userId: self.loginUser._id, username: self.loginUser.username }, function(data) {
             if (data.error)
                 AlertService.alertPopup('錯誤!', data.error);
             else {
                 FCMPlugin.subscribeToTopic($rootScope.storeTopic());
                 $rootScope.account = data.account;
                 $rootScope.role = data.account.role;
+                $rootScope.loginUser.accounts = $rootScope.loginUser.accounts.filter(ele => {
+                    if (ele.storeId == account.storeId) {
+                        ele.accountId = data.account._id
+                        AlertService.alertPopup('ACCOUNT', JSON.stringify(data.account))
+                        $rootScope.selectedAccount = JSON.stringify(ele)
+                    }
+                    return ele
+                })
                 init();
             }
         });
     };
 
     self.closeAccount = function() {
-        AccountService.closeAccount($rootScope.storeId, self.account._id, function(data) {
+        AccountService.closeAccount($rootScope.storeId, self.loginAccount._id, function(data) {
             if (data.error) {
                 AlertService.alertPopup('錯誤!', data.error);
             } else {
                 FCMPlugin.unsubscribeFromTopic($rootScope.storeTopic());
                 delete $rootScope.account;
                 delete $rootScope.role;
+                $rootScope.loginUser.accounts = $rootScope.loginUser.accounts.filter(ele => {
+                    if (ele.storeId == $rootScope.storeId) delete ele.accountId
+                    return ele
+                })
                 init();
             }
         })
     };
 
     self.switchMode = function() {
-        AccountService.switchMode({ accountId: self.account._id, role: self.mode ? 'manager' : 'customer' }, function(data) {
+        AccountService.switchMode({ accountId: self.loginAccount._id, role: self.mode ? 'manager' : 'customer' }, function(data) {
             $rootScope.account = data.account;
             $rootScope.role = data.account.role;
             init();
